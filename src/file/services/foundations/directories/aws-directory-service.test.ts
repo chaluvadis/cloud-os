@@ -71,6 +71,9 @@ describe('AWS Directory Service Test Suite', () => {
                 {
                     Key: '/directory/subdirectoryB/subdirectoryC/fileC.txt',
                 },
+                {
+                    Key: '/directory/subdirectoryB/subdirectoryC/fileC.txt',
+                },
             ];
             const expectedDirectory = new Directory(
                 '/directory',
