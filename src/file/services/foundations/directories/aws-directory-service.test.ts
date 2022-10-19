@@ -4,6 +4,7 @@ import { Drive } from '../../../../drive/models/drive';
 import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
+import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { AwsDirectoryService } from './aws-directory-service';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
@@ -121,6 +122,36 @@ describe('AWS Directory Service Test Suite', () => {
                 )
             ).thenResolve({
                 $metadata: {},
+            });
+
+            const action = () =>
+                service.retrieveDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).rejects.toThrow(expectedException);
+
+            verify(
+                mockedBroker.listObjectsInDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).once();
+        });
+
+        test('Should throw a validation exception when the an aws object does not have a key', async () => {
+            const nullException = new NullFilePathException();
+            const expectedException = new AWSDirectoryValidationException(
+                nullException
+            );
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = '/directory';
+            const expectedDirectoryPath = inputDirectoryPath;
+            when(
+                mockedBroker.listObjectsInDirectory(
+                    anyOfClass(Drive),
+                    inputDirectoryPath
+                )
+            ).thenResolve({
+                $metadata: {},
+                Contents: [{}],
             });
 
             const action = () =>

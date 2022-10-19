@@ -4,6 +4,7 @@ import { tryCatchAsync } from '../../../../libraries/exceptions/try-catch';
 import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
+import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 export class AwsDirectoryService {
@@ -28,6 +29,7 @@ export class AwsDirectoryService {
             (exception, exceptionType) => {
                 switch (exceptionType) {
                     case NullDirectoryContentsException:
+                    case NullFilePathException:
                         return new AWSDirectoryValidationException(exception);
                     default:
                         return exception;
@@ -41,9 +43,12 @@ export class AwsDirectoryService {
         awsFileList: AWSFile[]
     ): Directory {
         const expandedRootPath = rootPath.split('/');
-        const expandedFileKeys = awsFileList.map((awsFile) =>
-            awsFile.Key!.split('/')
-        );
+        const expandedFileKeys = awsFileList.map((awsFile) => {
+            if (!awsFile.Key) {
+                throw new NullFilePathException();
+            }
+            return awsFile.Key.split('/');
+        });
         return new Directory(
             rootPath,
             this.parseFileNames(expandedRootPath, expandedFileKeys),
