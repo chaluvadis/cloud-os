@@ -34,8 +34,9 @@ export class AWSFileService {
         );
     }
 
-    writeFile(drive: Drive, file: File): Promise<File> {
-        throw new Error('Not implemented');
+    async writeFile(drive: Drive, file: File): Promise<File> {
+        await this.fileBroker.putFile(drive, file);
+        return new File(file.path, file.content);
     }
 
     removeFile(drive: Drive, file: File): Promise<File> {

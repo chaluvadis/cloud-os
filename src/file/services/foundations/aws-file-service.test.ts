@@ -1,5 +1,13 @@
 import { Readable } from 'stream';
-import { anyOfClass, instance, mock, reset, verify, when } from 'ts-mockito';
+import {
+    anyOfClass,
+    capture,
+    instance,
+    mock,
+    reset,
+    verify,
+    when,
+} from 'ts-mockito';
 import { Drive } from '../../../drive/models/drive';
 import { AWSFileBroker } from '../../brokers/aws-file-broker';
 import { NullFileBodyException } from '../../models/file/exceptions/null-file-body-exception';
@@ -75,6 +83,29 @@ describe('AWS File Service Test Suite', () => {
                     expectedFilePath
                 )
             ).once();
+        });
+    });
+
+    describe('writeFile', () => {
+        test('Should write file to aws', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFile = new File('/file.txt', 'content');
+            const expectedFile = inputFile;
+            when(
+                mockedBroker.putFile(anyOfClass(Drive), anyOfClass(File))
+            ).thenResolve({
+                $metadata: {},
+            });
+
+            const actualFile = await service.writeFile(inputDrive, inputFile);
+
+            expect(actualFile).toEqual(expectedFile);
+            verify(
+                mockedBroker.putFile(anyOfClass(Drive), anyOfClass(File))
+            ).once();
+            const [drive, file] = capture(mockedBroker.putFile).last();
+            expect(drive).toEqual(inputDrive);
+            expect(file).toEqual(inputFile);
         });
     });
 });
