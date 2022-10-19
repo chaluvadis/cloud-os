@@ -8,5 +8,4 @@ module.exports = {
     },
     resolver: `${__dirname}/test/resolver.ts`,
     setupFilesAfterEnv: [`${__dirname}/test/jest-setup.ts`],
-    testEnvironment: 'jsdom',
 };
