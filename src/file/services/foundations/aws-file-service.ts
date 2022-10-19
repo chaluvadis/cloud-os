@@ -39,7 +39,8 @@ export class AWSFileService {
         return new File(file.path, file.content);
     }
 
-    removeFile(drive: Drive, file: File): Promise<File> {
-        throw new Error('Not implemented');
+    async removeFile(drive: Drive, file: File): Promise<File> {
+        await this.fileBroker.deleteFile(drive, file);
+        return new File(file.path, file.content);
     }
 }

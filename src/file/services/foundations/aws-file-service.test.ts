@@ -108,4 +108,24 @@ describe('AWS File Service Test Suite', () => {
             expect(file).toEqual(inputFile);
         });
     });
+
+    describe('removeFile', () => {
+        test('Should remove file from aws', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFile = new File('./file.txt', 'content');
+            const expectedFile = new File('./file.txt', 'content');
+            when(
+                mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
+            ).thenResolve({
+                $metadata: {},
+            });
+
+            const actualFile = await service.removeFile(inputDrive, inputFile);
+
+            expect(actualFile).toEqual(expectedFile);
+            verify(
+                mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
+            ).once();
+        });
+    });
 });
