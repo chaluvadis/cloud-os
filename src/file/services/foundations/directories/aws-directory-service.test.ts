@@ -3,8 +3,9 @@ import { anyOfClass, instance, mock, reset, verify, when } from 'ts-mockito';
 import { Drive } from '../../../../drive/models/drive';
 import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
-import { FileDescriptor } from '../../../models/file-descriptor/file-descriptor';
+import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
 import { AwsDirectoryService } from './aws-directory-service';
+import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 describe('AWS Directory Service Test Suite', () => {
     const mockedBroker = mock(AwsDirectoryBroker);
@@ -97,6 +98,35 @@ describe('AWS Directory Service Test Suite', () => {
             );
 
             expect(actualDirectory).toEqual(expectedDirectory);
+            verify(
+                mockedBroker.listObjectsInDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).once();
+        });
+
+        test('Should throw a validation exception when the contents are null', async () => {
+            const nullException = new NullDirectoryContentsException();
+            const expectedException = new AWSDirectoryValidationException(
+                nullException
+            );
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = '/directory';
+            const expectedDirectoryPath = inputDirectoryPath;
+            when(
+                mockedBroker.listObjectsInDirectory(
+                    anyOfClass(Drive),
+                    inputDirectoryPath
+                )
+            ).thenResolve({
+                $metadata: {},
+            });
+
+            const action = () =>
+                service.retrieveDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).rejects.toThrow(expectedException);
+
             verify(
                 mockedBroker.listObjectsInDirectory(
                     anyOfClass(Drive),

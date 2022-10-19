@@ -1,20 +1,39 @@
 import { _Object as AWSFile } from '@aws-sdk/client-s3';
 import { Drive } from '../../../../drive/models/drive';
+import { tryCatchAsync } from '../../../../libraries/exceptions/try-catch';
 import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
+import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
+import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 export class AwsDirectoryService {
     constructor(private readonly directoryBroker: AwsDirectoryBroker) {}
 
-    async retrieveDirectory(
-        drive: Drive,
-        directoryPath: string
-    ): Promise<Directory> {
-        const response = await this.directoryBroker.listObjectsInDirectory(
-            drive,
-            directoryPath
+    retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
+        return tryCatchAsync(
+            async () => {
+                const response =
+                    await this.directoryBroker.listObjectsInDirectory(
+                        drive,
+                        directoryPath
+                    );
+                if (!response.Contents) {
+                    throw new NullDirectoryContentsException();
+                }
+                return this.mapAWSFilesToDirectory(
+                    directoryPath,
+                    response.Contents
+                );
+            },
+            (exception, exceptionType) => {
+                switch (exceptionType) {
+                    case NullDirectoryContentsException:
+                        return new AWSDirectoryValidationException(exception);
+                    default:
+                        return exception;
+                }
+            }
         );
-        return this.mapAWSFilesToDirectory(directoryPath, response.Contents!);
     }
 
     private mapAWSFilesToDirectory(
