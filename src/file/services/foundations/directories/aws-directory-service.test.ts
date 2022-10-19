@@ -105,4 +105,31 @@ describe('AWS Directory Service Test Suite', () => {
             ).once();
         });
     });
+
+    describe('makeDirectory', () => {
+        test('Should create a new directory', async () => {
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = '/directory';
+            const expectedDirectory = new Directory('/directory');
+            const expectedDirectoryPath = inputDirectoryPath;
+            when(
+                mockedBroker.putDirectory(anyOfClass(Drive), inputDirectoryPath)
+            ).thenResolve({
+                $metadata: {},
+            });
+
+            const actualDirectory = await service.makeDirectory(
+                inputDrive,
+                inputDirectoryPath
+            );
+
+            expect(actualDirectory).toEqual(expectedDirectory);
+            verify(
+                mockedBroker.putDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).once();
+        });
+    });
 });

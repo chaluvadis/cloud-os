@@ -92,7 +92,11 @@ export class AwsDirectoryService {
             .join('');
     }
 
-    makeDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
-        throw new Error('not implemented');
+    async makeDirectory(
+        drive: Drive,
+        directoryPath: string
+    ): Promise<Directory> {
+        await this.directoryBroker.putDirectory(drive, directoryPath);
+        return new Directory(directoryPath);
     }
 }
