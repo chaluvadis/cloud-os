@@ -7,8 +7,8 @@ import {
     DeleteObjectCommand,
     PutObjectCommand,
 } from '@aws-sdk/client-s3';
-import { Drive } from '../../drive/models/drive';
-import { File } from '../models/file/file';
+import { Drive } from '../../../drive/models/drive';
+import { File } from '../../models/file/file';
 
 export class AWSFileBroker {
     constructor(private readonly s3Client: S3Client) {}

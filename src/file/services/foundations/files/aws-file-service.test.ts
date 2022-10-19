@@ -9,7 +9,7 @@ import {
     when,
 } from 'ts-mockito';
 import { Drive } from '../../../../drive/models/drive';
-import { AWSFileBroker } from '../../../brokers/aws-file-broker';
+import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';
 import { AWSFileService } from './aws-file-service';
