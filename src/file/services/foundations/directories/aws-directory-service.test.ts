@@ -5,12 +5,12 @@ import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-b
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
-import { AwsDirectoryService } from './aws-directory-service';
+import { AWSDirectoryService } from './aws-directory-service';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 describe('AWS Directory Service Test Suite', () => {
     const mockedBroker = mock(AwsDirectoryBroker);
-    const service = new AwsDirectoryService(instance(mockedBroker));
+    const service = new AWSDirectoryService(instance(mockedBroker));
 
     beforeEach(() => {
         reset(mockedBroker);

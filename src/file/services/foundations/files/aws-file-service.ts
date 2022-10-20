@@ -20,7 +20,7 @@ export class AWSFileService {
                 }
                 return new File(
                     filePath,
-                    await response.Body!.transformToString()
+                    await response.Body.transformToString()
                 );
             },
             (exception, exceptionType) => {

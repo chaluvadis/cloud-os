@@ -7,7 +7,7 @@ import { NullDirectoryContentsException } from '../../../models/directory/except
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
-export class AwsDirectoryService {
+export class AWSDirectoryService {
     constructor(private readonly directoryBroker: AwsDirectoryBroker) {}
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
