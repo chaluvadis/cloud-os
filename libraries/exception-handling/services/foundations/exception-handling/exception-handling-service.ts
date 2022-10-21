@@ -38,7 +38,7 @@ export class ExceptionHandlingService<T> {
         action: ExceptionAction,
         func: Function<T>
     ): ExceptionHandlingChainActions<T> {
-        return this.exceptions.tryCatch(() => {
+        return this.exceptions.handleCatch(() => {
             this.addExceptionPatterns(exceptionPatternList, action);
             return this.createExceptionHandlingChainActions(func);
         });
@@ -64,7 +64,7 @@ export class ExceptionHandlingService<T> {
     }
 
     private wrapException(exception: Exception) {
-        return this.exceptions.tryCatch(() => {
+        return this.exceptions.wrapExceptions(() => {
             const exceptionConstructor =
                 exception.constructor as ExceptionConstructor;
             const action = this.broker.getAction(exceptionConstructor);
@@ -78,8 +78,10 @@ export class ExceptionHandlingService<T> {
     tryCatchAsync(
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
-        this.validations.validateFunction(func);
-        return this.createExceptionHandlingChainActionsAsync(func);
+        return this.exceptions.tryCatch(() => {
+            this.validations.validateFunction(func);
+            return this.createExceptionHandlingChainActionsAsync(func);
+        });
     }
 
     private createExceptionHandlingChainActionsAsync(func: AsyncFunction<T>) {
@@ -95,7 +97,7 @@ export class ExceptionHandlingService<T> {
         action: ExceptionAction,
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
-        return this.exceptions.tryCatch(() => {
+        return this.exceptions.handleCatch(() => {
             this.addExceptionPatterns(exceptionPatternList, action);
             return this.createExceptionHandlingChainActionsAsync(func);
         });

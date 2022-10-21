@@ -6,28 +6,23 @@ import { NullExceptionActionException } from '../../../models/exception-handling
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
 import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { Function } from '../../../models/exception-handling/function';
-import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
 
 export class ExceptionHandlingServiceValidations<T> {
     validateFunction(func: Function<T> | AsyncFunction<T>) {
         if (isNil(func)) {
-            const nullException = new NullFunctionException();
-            throw new ExceptionHandlingValidationException(nullException);
+            throw new NullFunctionException();
         }
     }
 
     validateExceptionPatterns(exceptionPatternList: ExceptionConstructor[]) {
         if (isNil(exceptionPatternList)) {
-            const nullException = new NullExceptionPatternList();
-            throw new ExceptionHandlingValidationException(nullException);
+            throw new NullExceptionPatternList();
         }
     }
 
     validateExceptionAction(action: ExceptionAction) {
         if (isNil(action)) {
-            throw new ExceptionHandlingValidationException(
-                new NullExceptionActionException()
-            );
+            throw new NullExceptionActionException();
         }
     }
 }

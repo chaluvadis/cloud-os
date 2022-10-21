@@ -17,20 +17,44 @@ export class ExceptionHandlingServiceExceptions {
             const exceptionConstructor =
                 exception.constructor as ExceptionConstructor;
             switch (exceptionConstructor) {
-                case ExceptionHandlingValidationException:
-                case ExceptionHandlingServiceException:
-                    throw exception;
                 case NullFunctionException:
+                    throw new ExceptionHandlingValidationException(exception);
+                default:
+                    throw this.createDefaultServiceException(exception);
+            }
+        }
+    }
+
+    private createDefaultServiceException(exception: Exception) {
+        const failedException = new FailedExceptionActionStorageException(
+            exception
+        );
+        throw new ExceptionHandlingServiceException(failedException);
+    }
+
+    handleCatch<T>(func: Function<T>) {
+        try {
+            return func();
+        } catch (error) {
+            const exception = Exception.fromError(error);
+            const exceptionConstructor =
+                exception.constructor as ExceptionConstructor;
+            switch (exceptionConstructor) {
                 case NullExceptionPatternList:
                 case NullExceptionActionException:
                     throw new ExceptionHandlingValidationException(exception);
                 default:
-                    const failedException =
-                        new FailedExceptionActionStorageException(exception);
-                    throw new ExceptionHandlingServiceException(
-                        failedException
-                    );
+                    throw this.createDefaultServiceException(exception);
             }
+        }
+    }
+
+    wrapExceptions<T>(func: Function<T>) {
+        try {
+            return func();
+        } catch (error) {
+            const exception = Exception.fromError(error);
+            throw this.createDefaultServiceException(exception);
         }
     }
 }

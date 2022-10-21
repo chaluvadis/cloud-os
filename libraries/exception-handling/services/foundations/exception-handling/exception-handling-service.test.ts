@@ -52,7 +52,9 @@ describe('Exception Handling Service Test Suite', () => {
             };
 
             const actualChain = service.tryCatch(inputFunction);
-            expect(actualChain.execute).toThrowException(expectedException);
+            expect(() => actualChain.execute()).toThrowException(
+                expectedException
+            );
 
             verify(mockedExceptionActionBroker.getAction(Exception)).once();
         });
