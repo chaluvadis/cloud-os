@@ -80,4 +80,23 @@ describe('Exception Test Suite', () => {
             expect(exception.data.get(expectedKey)).toEqual(expectedValues);
         });
     });
+
+    describe('throwIfContainsErrors', () => {
+        test('Should not throw since when exception has no errors', () => {
+            const exception = new Exception();
+
+            exception.throwIfContainsErrors();
+        });
+
+        test('Should throw when the exception contains errors', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['message']]])
+            );
+
+            const action = () => exception.throwIfContainsErrors();
+            expect(action).toThrow();
+        });
+    });
 });
