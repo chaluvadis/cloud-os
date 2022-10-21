@@ -16,7 +16,7 @@ export class Exception extends Error {
             return error;
         } else if (error instanceof Error) {
             return new Exception(error.message, error);
-        } else if (error instanceof Symbol) {
+        } else if (typeof error === 'symbol') {
             return new Exception(error.toString());
         } else if (typeof error === 'string') {
             return new Exception(error);
@@ -155,9 +155,8 @@ export class Exception extends Error {
             return isEqual;
         }
         for (const [key, value] of sharedItems.entries()) {
-            const expectedValues = value.join(', ');
-            const actualValues = this.data.get(key)!.join(', ');
-
+            const expectedValues = value.join("', '");
+            const actualValues = this.data.get(key)!.join("', '");
             if (expectedValues !== actualValues) {
                 messageBuilder.append(
                     `- Expected to find key '${key}' with value(s) ['${expectedValues}'], but found value(s) ['${actualValues}'].`
@@ -165,7 +164,7 @@ export class Exception extends Error {
                 return false;
             }
         }
-        return true;
+        return isEqual;
     }
 
     private getDataDifferences(

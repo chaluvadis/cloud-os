@@ -340,6 +340,144 @@ describe('Exception Test Suite', () => {
     });
 
     describe('dataEqualsWithDetails', () => {
-        test('Should be true and have no details when there is no data', () => {});
+        test('Should be true and have no details when there is no data', () => {
+            const exception = new Exception();
+            const inputExceptionData = new Map();
+            const expectedDetails = [true, ''];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be true and have no details when there is data', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([
+                    ['keyA', ['messageA', 'messageB']],
+                    ['keyB', ['messageA']],
+                ])
+            );
+            const inputExceptionData = new Map([
+                ['keyA', ['messageA', 'messageB']],
+                ['keyB', ['messageA']],
+            ]);
+            const expectedDetails = [true, ''];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be false and have details when the size is mismatched and is missing data', () => {
+            const exception = new Exception();
+            const inputExceptionData = new Map([['key', ['message']]]);
+            const expectedDetails = [
+                false,
+                [
+                    `- Expected map item count to be ${inputExceptionData.size}, but found ${exception.data.size}.`,
+                    "- Expected to find key 'key'.",
+                ].join('\n'),
+            ];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be false and have details when the exceptions do not share any data', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key2', ['message2']]])
+            );
+            const inputExceptionData = new Map([['key', ['message']]]);
+            const expectedDetails = [
+                false,
+                [
+                    "- Did not expect to find key 'key2'.",
+                    "- Expected to find key 'key'.",
+                ].join('\n'),
+            ];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be false and have details when the exception has additional data', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['message']]])
+            );
+            const inputExceptionData = new Map();
+            const expectedDetails = [
+                false,
+                [
+                    `- Expected map item count to be ${inputExceptionData.size}, but found ${exception.data.size}.`,
+                    "- Did not expect to find key 'key'.",
+                ].join('\n'),
+            ];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be false and have details when the exception has additional data, missing data, and shared data', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([
+                    ['keyA', ['message']],
+                    ['keyB', ['message']],
+                ])
+            );
+            const inputExceptionData = new Map([
+                ['keyA', ['message']],
+                ['keyC', ['message']],
+            ]);
+            const expectedDetails = [
+                false,
+                [
+                    "- Did not expect to find key 'keyB'.",
+                    "- Expected to find key 'keyC'.",
+                ].join('\n'),
+            ];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
+
+        test('Should be false and have details when the exception has shared data with mismatched values', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['messageA', 'messageB']]])
+            );
+            const inputExceptionData = new Map([
+                ['key', ['messageA', 'messageC']],
+            ]);
+            const expectedDetails = [
+                false,
+                [
+                    "- Expected to find key 'key' with value(s) ['messageA', 'messageC'], but found value(s) ['messageA', 'messageB'].",
+                ].join('\n'),
+            ];
+
+            const actualDetails =
+                exception.dataEqualsWithDetails(inputExceptionData);
+
+            expect(actualDetails).toEqual(expectedDetails);
+        });
     });
 });
