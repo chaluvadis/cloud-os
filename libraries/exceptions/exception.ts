@@ -68,6 +68,11 @@ export class Exception extends Error {
             return true;
         }
         if (
+            other.innerException instanceof Exception &&
+            this.innerException instanceof Exception
+        ) {
+            return this.innerException.equals(other.innerException);
+        } else if (
             other.innerException instanceof Error &&
             this.innerException instanceof Error
         ) {
@@ -75,11 +80,6 @@ export class Exception extends Error {
                 other.innerException.name === this.innerException.name &&
                 other.innerException.message === this.innerException.message
             );
-        } else if (
-            other.innerException instanceof Exception &&
-            this.innerException instanceof Exception
-        ) {
-            return this.innerException.equals(other.innerException);
         } else {
             return false;
         }

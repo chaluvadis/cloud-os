@@ -230,6 +230,24 @@ describe('Exception Test Suite', () => {
             expect(actualResult).toEqual(expectedResult);
         });
 
+        test('Should be false when the innerExceptions are an exception and a null', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Exception('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                null,
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
         test('Should be false when the innerExceptions are an unequal exceptions', () => {
             const exceptionA = new Exception(
                 'message',
@@ -319,5 +337,9 @@ describe('Exception Test Suite', () => {
 
             expect(actualResult).toEqual(expectedResult);
         });
+    });
+
+    describe('dataEqualsWithDetails', () => {
+        test('Should be true and have no details when there is no data', () => {});
     });
 });
