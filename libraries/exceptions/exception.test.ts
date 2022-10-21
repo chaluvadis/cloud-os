@@ -99,4 +99,36 @@ describe('Exception Test Suite', () => {
             expect(action).toThrow();
         });
     });
+
+    describe('addExceptionData', () => {
+        test('Should not add any data when the exception data is null', () => {
+            const inputExceptionData = null as any;
+            const exception = new Exception();
+            const expectedData = new Map<string, string[]>();
+
+            exception.addExceptionData(inputExceptionData);
+
+            expect(exception.data).toEqual(expectedData);
+        });
+
+        test('Should add data when the exception data is not null', () => {
+            const inputExceptionData = new Map<string, string[]>([
+                ['key2', ['message']],
+            ]);
+            const existingData = new Map<string, string[]>([
+                ['key1', ['message']],
+            ]);
+            const exception = new Exception('', null, existingData);
+            const expectedData = new Map<string, string[]>([
+                ['key1', ['message']],
+                ['key2', ['message']],
+            ]);
+
+            exception.addExceptionData(inputExceptionData);
+
+            expect(exception.data).toEqual(expectedData);
+        });
+    });
+
+    
 });

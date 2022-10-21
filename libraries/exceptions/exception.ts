@@ -39,15 +39,15 @@ export class Exception extends Error {
         }
     }
 
-    addDataMap(map: ExceptionData) {
+    addExceptionData(map: ExceptionData) {
         if (map != null) {
             for (const [key, value] of map.entries()) {
-                this.addData(key, value);
+                this.addErrorMessages(key, value);
             }
         }
     }
 
-    addData(key: string, value: string[]) {
+    addErrorMessages(key: string, value: string[]) {
         if (this.data.has(key)) {
             throw new Error(`Exception data already contains the key: ${key}.`);
         }
