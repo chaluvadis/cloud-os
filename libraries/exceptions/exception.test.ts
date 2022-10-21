@@ -47,4 +47,37 @@ describe('Exception Test Suite', () => {
             expect(actualError.equals(expectedError)).toBeTruthy();
         });
     });
+
+    describe('upsertDataList', () => {
+        test('Should add a message to a key', () => {
+            const inputKey = 'key';
+            const inputValue = 'value';
+            const expectedKey = inputKey;
+            const expectedValues = [inputValue];
+            const exception = new Exception();
+
+            exception.upsertDataList(inputKey, inputValue);
+
+            expect(exception.data.has(expectedKey)).toBeTruthy();
+            expect(exception.data.get(expectedKey)).toEqual(expectedValues);
+        });
+
+        test('Should create a new key in the data and add a message', () => {
+            const inputKey = 'key';
+            const inputValue = 'valueC';
+            const existingValues = ['valueA', 'valueB'];
+            const expectedKey = inputKey;
+            const expectedValues = [...existingValues, inputValue];
+            const exception = new Exception(
+                '',
+                null,
+                new Map([[inputKey, existingValues]])
+            );
+
+            exception.upsertDataList(inputKey, inputValue);
+
+            expect(exception.data.has(expectedKey)).toBeTruthy();
+            expect(exception.data.get(expectedKey)).toEqual(expectedValues);
+        });
+    });
 });

@@ -42,23 +42,19 @@ export class Exception extends Error {
     addDataMap(map: ExceptionData) {
         if (map != null) {
             for (const [key, value] of map.entries()) {
-                this.insertData(key, value);
+                this.addData(key, value);
             }
         }
     }
 
     addData(key: string, value: string[]) {
-        this.insertData(key, value);
-    }
-
-    private insertData(key: string, value: string[]) {
         if (this.data.has(key)) {
             throw new Error(`Exception data already contains the key: ${key}.`);
         }
         this.data.set(key, value);
     }
 
-    public equals(other: Exception) {
+    equals(other: Exception) {
         return (
             this.name === other.name &&
             this.message == other.message &&
@@ -66,12 +62,12 @@ export class Exception extends Error {
         );
     }
 
-    public dataEquals(map: ExceptionData): boolean {
+    dataEquals(map: ExceptionData): boolean {
         const [isEqual] = this.dataEqualsWithDetails(map);
         return isEqual;
     }
 
-    public dataEqualsWithDetails(map: ExceptionData): [boolean, string] {
+    dataEqualsWithDetails(map: ExceptionData): [boolean, string] {
         const messageBuilder = new ExceptionMessageBuilder();
         let isEqual = true;
         if (this.data.size == 0 && map.size == 0) {
