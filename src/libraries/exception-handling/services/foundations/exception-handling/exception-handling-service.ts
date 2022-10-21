@@ -1,4 +1,4 @@
-import { isNil } from '../../../../conditions/is-nil';
+import { isNil } from '../../../../conditions';
 import { Exception } from '../../../../exceptions';
 import { ExceptionConstructor } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
