@@ -18,7 +18,7 @@ export class ExceptionHandlingService<T> {
 
     tryCatch(func: Function<T>): ExceptionHandlingChainActions<T> {
         this.validateFunction(func);
-        return new ExceptionHandlingChainActions(
+        return new ExceptionHandlingChainActions<T>(
             (exceptionPatterns, action) =>
                 this.handleCatch(exceptionPatterns, action, func),
             () => this.execute(func)
@@ -38,7 +38,7 @@ export class ExceptionHandlingService<T> {
         func: Function<T>
     ): ExceptionHandlingChainActions<T> {
         this.addExceptionPatterns(exceptionPatternList, action);
-        return new ExceptionHandlingChainActions(
+        return new ExceptionHandlingChainActions<T>(
             (newExceptionPatterns, newAction) =>
                 this.handleCatch(newExceptionPatterns, newAction, func),
             () => this.execute(func)
@@ -111,7 +111,7 @@ export class ExceptionHandlingService<T> {
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
         this.validateFunction(func);
-        return new ExceptionHandlingChainActions(
+        return new ExceptionHandlingChainActions<Promise<T>>(
             (exceptionPatterns, action) =>
                 this.handleCatchAsync(exceptionPatterns, action, func),
             () => this.executeAsync(func)
@@ -124,7 +124,7 @@ export class ExceptionHandlingService<T> {
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
         this.addExceptionPatterns(exceptionPatternList, action);
-        return new ExceptionHandlingChainActions(
+        return new ExceptionHandlingChainActions<Promise<T>>(
             (newExceptionPatterns, newAction) =>
                 this.handleCatchAsync(newExceptionPatterns, newAction, func),
             () => this.executeAsync(func)
