@@ -1,6 +1,6 @@
 import { Exception } from '../../../../../../libraries/exceptions';
 
-export class AwsFileValidationException extends Exception {
+export class AWSFileValidationException extends Exception {
     constructor(innerException: Exception) {
         super('AWS file validation exception.', innerException);
     }

@@ -13,7 +13,7 @@ import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';
 import { AWSFileService } from './aws-file-service';
-import { AwsFileValidationException } from './exceptions/aws-file-validation-exception';
+import { AWSFileValidationException } from './exceptions/aws-file-validation-exception';
 
 describe('AWS File Service Test Suite', () => {
     const mockedBroker = mock(AWSFileBroker);
@@ -60,7 +60,7 @@ describe('AWS File Service Test Suite', () => {
             const inputDrive = new Drive('drive');
             const inputFilePath = '/file.txt';
             const nullException = new NullFileBodyException();
-            const expectedException = new AwsFileValidationException(
+            const expectedException = new AWSFileValidationException(
                 nullException
             );
             const expectedFilePath = inputFilePath;

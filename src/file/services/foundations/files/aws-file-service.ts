@@ -3,7 +3,7 @@ import { tryCatchAsync } from '../../../../../libraries/exception-handling';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';
-import { AwsFileValidationException } from './exceptions/aws-file-validation-exception';
+import { AWSFileValidationException } from './exceptions/aws-file-validation-exception';
 
 export class AWSFileService {
     constructor(private readonly fileBroker: AWSFileBroker) {}
@@ -21,7 +21,7 @@ export class AWSFileService {
         })
             .handle(
                 [NullFileBodyException],
-                (exception) => new AwsFileValidationException(exception)
+                (exception) => new AWSFileValidationException(exception)
             )
             .execute();
     }
