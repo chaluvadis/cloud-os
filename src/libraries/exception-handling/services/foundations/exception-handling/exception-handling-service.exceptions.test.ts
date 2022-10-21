@@ -10,10 +10,10 @@ import {
 import { Exception } from '../../../../exceptions/exception';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { ExceptionHandlingService } from './exception-handling-service';
-import { ExceptionHandlingDependencyException } from './exceptions/exception-handling-dependency-exception';
+import { ExceptionHandlingServiceException } from './exceptions/exception-handling-service-exception';
 import { FailedExceptionActionStorageException } from './exceptions/failed-exception-action-storage-exception';
 
-describe('Exception Handling Service Test Suite', () => {
+describe('Exception Handling Service Exceptions Test Suite', () => {
     const mockedExceptionActionBroker = mock(ExceptionActionBroker);
     const service = new ExceptionHandlingService(
         instance(mockedExceptionActionBroker)
@@ -24,7 +24,7 @@ describe('Exception Handling Service Test Suite', () => {
     });
 
     describe('tryCatch', () => {
-        test('Should throw a dependency exception when adding an action throws an exception', () => {
+        test('Should throw a service exception when adding an action throws an exception', () => {
             const inputFunction = () => {};
             const innerError = new Error('Failed to add action');
             const innerException = new Exception(
@@ -35,7 +35,7 @@ describe('Exception Handling Service Test Suite', () => {
                 innerException
             );
             const defaultAction = () => new Exception();
-            const expectedException = new ExceptionHandlingDependencyException(
+            const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
             when(
@@ -53,7 +53,7 @@ describe('Exception Handling Service Test Suite', () => {
             ).once();
         });
 
-        test('Should throw a dependency exception when getting an action throws an exception', () => {
+        test('Should throw a service exception when getting an action throws an exception', () => {
             const inputFunction = () => {
                 throw new Error();
             };
@@ -65,7 +65,7 @@ describe('Exception Handling Service Test Suite', () => {
             const failedException = new FailedExceptionActionStorageException(
                 innerException
             );
-            const expectedException = new ExceptionHandlingDependencyException(
+            const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
             when(mockedExceptionActionBroker.getAction(Exception)).thenThrow(
@@ -80,7 +80,7 @@ describe('Exception Handling Service Test Suite', () => {
     });
 
     describe('tryCatchAsync', () => {
-        test('Should throw a dependency exception when adding an action throws an exception', async () => {
+        test('Should throw a service exception when adding an action throws an exception', async () => {
             const inputFunction = async () => {};
             const innerError = new Error('Failed to add action');
             const innerException = new Exception(
@@ -91,7 +91,7 @@ describe('Exception Handling Service Test Suite', () => {
                 innerException
             );
             const defaultAction = () => new Exception();
-            const expectedException = new ExceptionHandlingDependencyException(
+            const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
             when(
@@ -109,7 +109,7 @@ describe('Exception Handling Service Test Suite', () => {
             ).once();
         });
 
-        test('Should throw a dependency exception when getting an action throws an exception', async () => {
+        test('Should throw a service exception when getting an action throws an exception', async () => {
             const inputFunction = async () => {
                 throw new Error();
             };
@@ -121,7 +121,7 @@ describe('Exception Handling Service Test Suite', () => {
             const failedException = new FailedExceptionActionStorageException(
                 innerException
             );
-            const expectedException = new ExceptionHandlingDependencyException(
+            const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
             when(mockedExceptionActionBroker.getAction(Exception)).thenThrow(

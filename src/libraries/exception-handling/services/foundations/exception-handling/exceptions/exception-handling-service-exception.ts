@@ -1,9 +1,9 @@
 import { Exception } from '../../../../../exceptions/exception';
 
-export class ExceptionHandlingDependencyException extends Exception {
+export class ExceptionHandlingServiceException extends Exception {
     constructor(innerException: Exception) {
         super(
-            'Exception handling dependency exception, contact support.',
+            'Exception handling service exception, contact support.',
             innerException
         );
     }

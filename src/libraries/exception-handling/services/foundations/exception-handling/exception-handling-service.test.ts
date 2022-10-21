@@ -9,13 +9,7 @@ import {
 } from 'ts-mockito';
 import { Exception } from '../../../../exceptions/exception';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
-import { NullExceptionActionException } from '../../../models/exception-handling/exceptions/null-exception-action-exception';
-import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
-import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { ExceptionHandlingService } from './exception-handling-service';
-import { ExceptionHandlingDependencyException } from './exceptions/exception-handling-dependency-exception';
-import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
-import { FailedExceptionActionStorageException } from './exceptions/failed-exception-action-storage-exception';
 
 class HigherLevelException extends Exception {
     constructor(innerException: Exception) {
@@ -61,56 +55,6 @@ describe('Exception Handling Service Test Suite', () => {
             expect(actualChain.execute).toThrowException(expectedException);
 
             verify(mockedExceptionActionBroker.getAction(Exception)).once();
-        });
-
-        test('Should throw a validation exception when a null function is provided', () => {
-            const inputFunction = null as any;
-            const nullException = new NullFunctionException();
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-
-            const action = () => service.tryCatch(inputFunction).execute();
-            expect(action).toThrowException(expectedException);
-
-            verify(mockedExceptionActionBroker.getAction(anything())).never();
-        });
-
-        test('Should throw a validation exception when a null pattern is provided', () => {
-            const inputFunction = () => {};
-            const nullException = new NullExceptionPatternList();
-            const inputPatterns = null as any;
-            const defaultAction = () => new Exception();
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-
-            const action = () =>
-                service
-                    .tryCatch(inputFunction)
-                    .handle(inputPatterns, defaultAction);
-            expect(action).toThrowException(expectedException);
-
-            verify(
-                mockedExceptionActionBroker.addAction(anything(), anyFunction())
-            ).never();
-        });
-
-        test('Should throw a validation exception when a null action is provided', () => {
-            const inputFunction = () => {};
-            const nullException = new NullExceptionActionException();
-            const defaultAction = null as any;
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-
-            const action = () =>
-                service.tryCatch(inputFunction).handle([], defaultAction);
-            expect(action).toThrowException(expectedException);
-
-            verify(
-                mockedExceptionActionBroker.addAction(anything(), anyFunction())
-            ).never();
         });
 
         test('Should add the pattern to be matched when catching an exception thrown by the function', () => {
@@ -172,22 +116,6 @@ describe('Exception Handling Service Test Suite', () => {
     });
 
     describe('tryCatchAsync', () => {
-        test('Should throw a validation exception when the function is null', () => {
-            const nullException = new NullFunctionException();
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-            const inputFunction = null as any;
-
-            const action = () => service.tryCatchAsync(inputFunction);
-            expect(action).toThrowException(expectedException);
-
-            verify(mockedExceptionActionBroker.getAction(anything())).never();
-            verify(
-                mockedExceptionActionBroker.addAction(anything(), anyFunction())
-            ).never();
-        });
-
         test('Should return the value of the function when it does not throw', async () => {
             const result = 'success';
             const expectedResult = result;
@@ -218,43 +146,6 @@ describe('Exception Handling Service Test Suite', () => {
             await expect(action).rejects.toThrowException(expectedException);
 
             verify(mockedExceptionActionBroker.getAction(anything())).once();
-        });
-
-        test('Should throw a validation exception when a null pattern is provided', async () => {
-            const inputFunction = async () => {};
-            const nullException = new NullExceptionPatternList();
-            const inputPatterns = null as any;
-            const defaultAction = () => new Exception();
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-
-            const action = () =>
-                service
-                    .tryCatchAsync(inputFunction)
-                    .handle(inputPatterns, defaultAction);
-            expect(action).toThrowException(expectedException);
-
-            verify(
-                mockedExceptionActionBroker.addAction(anything(), anyFunction())
-            ).never();
-        });
-
-        test('Should throw a validation exception when a null action is provided', () => {
-            const inputFunction = async () => {};
-            const nullException = new NullExceptionActionException();
-            const defaultAction = null as any;
-            const expectedException = new ExceptionHandlingValidationException(
-                nullException
-            );
-
-            const action = () =>
-                service.tryCatchAsync(inputFunction).handle([], defaultAction);
-            expect(action).toThrowException(expectedException);
-
-            verify(
-                mockedExceptionActionBroker.addAction(anything(), anyFunction())
-            ).never();
         });
 
         test('Should add the pattern to be matched when catching an exception thrown by the function', () => {
