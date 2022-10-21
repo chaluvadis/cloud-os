@@ -288,4 +288,36 @@ describe('Exception Test Suite', () => {
             expect(actualResult).toEqual(expectedResult);
         });
     });
+
+    describe('dataEquals', () => {
+        test('Should be true when the data is equal', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['message', 'message again']]])
+            );
+            const inputExceptionData = new Map([
+                ['key', ['message', 'message again']],
+            ]);
+            const expectedResult = true;
+
+            const actualResult = exception.dataEquals(inputExceptionData);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the data is not equal', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['message', 'message again']]])
+            );
+            const inputExceptionData = new Map([['key', ['message']]]);
+            const expectedResult = false;
+
+            const actualResult = exception.dataEquals(inputExceptionData);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+    });
 });
