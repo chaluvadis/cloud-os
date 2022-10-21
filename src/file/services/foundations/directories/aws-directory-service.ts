@@ -1,14 +1,14 @@
 import { _Object as AWSFile } from '@aws-sdk/client-s3';
 import { Drive } from '../../../../drive/models/drive';
 import { tryCatchAsync } from '../../../../../libraries/exception-handling';
-import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
+import { AWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 export class AWSDirectoryService {
-    constructor(private readonly directoryBroker: AwsDirectoryBroker) {}
+    constructor(private readonly directoryBroker: AWSDirectoryBroker) {}
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
         return tryCatchAsync(async () => {

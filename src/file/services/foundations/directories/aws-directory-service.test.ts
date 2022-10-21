@@ -1,7 +1,7 @@
 import { _Object } from '@aws-sdk/client-s3';
 import { anyOfClass, instance, mock, reset, verify, when } from 'ts-mockito';
 import { Drive } from '../../../../drive/models/drive';
-import { AwsDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
+import { AWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
@@ -9,7 +9,7 @@ import { AWSDirectoryService } from './aws-directory-service';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 describe('AWS Directory Service Test Suite', () => {
-    const mockedBroker = mock(AwsDirectoryBroker);
+    const mockedBroker = mock(AWSDirectoryBroker);
     const service = new AWSDirectoryService(instance(mockedBroker));
 
     beforeEach(() => {
