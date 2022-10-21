@@ -1,4 +1,4 @@
-import { Exception } from '../src/libraries/exceptions';
+import { Exception } from '../libraries/exceptions';
 
 type TestAction = () => any;
 

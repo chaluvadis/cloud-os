@@ -10,7 +10,7 @@ import {
 import { Exception } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { ExceptionHandlingService } from './exception-handling-service';
-import { ExceptionHandlingServiceException } from './exceptions-handling-service-exception';
+import { ExceptionHandlingServiceException } from './exceptions/exception-handling-service-exception';
 import { FailedExceptionActionStorageException } from './exceptions/failed-exception-action-storage-exception';
 
 describe('Exception Handling Service Exceptions Test Suite', () => {

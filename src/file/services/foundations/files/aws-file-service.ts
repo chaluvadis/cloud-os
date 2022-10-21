@@ -1,5 +1,5 @@
 import { Drive } from '../../../../drive/models/drive';
-import { tryCatchAsync } from '../../../../libraries/exception-handling';
+import { tryCatchAsync } from '../../../../../libraries/exception-handling';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';

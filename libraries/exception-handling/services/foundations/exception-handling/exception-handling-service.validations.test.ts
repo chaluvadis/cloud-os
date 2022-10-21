@@ -12,7 +12,7 @@ import { NullExceptionActionException } from '../../../models/exception-handling
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
 import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { ExceptionHandlingService } from './exception-handling-service';
-import { ExceptionHandlingValidationException } from './exceptions-handling-validation-exception';
+import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
 
 describe('Exception Handling Service Validations Test Suite', () => {
     const mockedExceptionActionBroker = mock(ExceptionActionBroker);
