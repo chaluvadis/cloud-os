@@ -1,6 +1,8 @@
 import { ValidationRule } from './validation-rule';
 
-export interface ValidationStep {
-    name: string;
-    rule: ValidationRule;
+export class ValidationStep {
+    constructor(
+        public readonly name: string,
+        public readonly rule: ValidationRule
+    ) {}
 }

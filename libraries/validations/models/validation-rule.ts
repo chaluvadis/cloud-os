@@ -1,4 +1,6 @@
-export interface ValidationRule {
-    condition: boolean;
-    message: string;
+export class ValidationRule {
+    constructor(
+        public readonly condition: boolean,
+        public readonly message: string
+    ) {}
 }
