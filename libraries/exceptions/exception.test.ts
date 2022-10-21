@@ -130,5 +130,30 @@ describe('Exception Test Suite', () => {
         });
     });
 
-    
+    describe('addErrorMessages', () => {
+        test('Should add error messages to the exception', () => {
+            const exception = new Exception();
+            const expectedData = new Map([['key', ['message']]]);
+
+            exception.addErrorMessages('key', ['message']);
+
+            expect(exception.data).toEqual(expectedData);
+        });
+
+        test('Should throw an exception when adding a duplicate key', () => {
+            const exception = new Exception(
+                '',
+                null,
+                new Map([['key', ['messages']]])
+            );
+            const inputKey = 'key';
+            const expectedError = new Error(
+                `Exception data already contains the key: ${inputKey}.`
+            );
+
+            const action = () =>
+                exception.addErrorMessages(inputKey, ['message']);
+            expect(action).toThrowError(expectedError);
+        });
+    });
 });
