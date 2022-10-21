@@ -12,12 +12,12 @@ import { Directory } from '../../../models/directory/directory';
 import { File } from '../../../models/file/file';
 import { AWSDirectoryService } from '../../foundations/directories/aws-directory-service';
 import { AWSFileService } from '../../foundations/files/aws-file-service';
-import { AwsFileSystemOrchestrationService } from './aws-file-system-orchestration-service';
+import { AWSFileSystemOrchestrationService } from './aws-file-system-orchestration-service';
 
 describe('AWS File System Orchestration Service Test Suite', () => {
     const mockedFileService = mock(AWSFileService);
     const mockedDirectoryService = mock(AWSDirectoryService);
-    const service = new AwsFileSystemOrchestrationService(
+    const service = new AWSFileSystemOrchestrationService(
         instance(mockedFileService),
         instance(mockedDirectoryService)
     );

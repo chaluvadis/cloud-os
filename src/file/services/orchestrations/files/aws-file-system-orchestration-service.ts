@@ -4,7 +4,7 @@ import { File } from '../../../models/file/file';
 import { AWSDirectoryService } from '../../foundations/directories/aws-directory-service';
 import { AWSFileService } from '../../foundations/files/aws-file-service';
 
-export class AwsFileSystemOrchestrationService {
+export class AWSFileSystemOrchestrationService {
     constructor(
         private readonly fileService: AWSFileService,
         private readonly directoryService: AWSDirectoryService
