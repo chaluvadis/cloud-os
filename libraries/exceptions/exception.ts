@@ -58,8 +58,31 @@ export class Exception extends Error {
         return (
             this.name === other.name &&
             this.message == other.message &&
+            this.innerExceptionEquals(other) &&
             this.dataEquals(other.data)
         );
+    }
+
+    private innerExceptionEquals(other: Exception) {
+        if (other.innerException === null && this.innerException === null) {
+            return true;
+        }
+        if (
+            other.innerException instanceof Error &&
+            this.innerException instanceof Error
+        ) {
+            return (
+                other.innerException.name === this.innerException.name &&
+                other.innerException.message === this.innerException.message
+            );
+        } else if (
+            other.innerException instanceof Exception &&
+            this.innerException instanceof Exception
+        ) {
+            return this.innerException.equals(other.innerException);
+        } else {
+            return false;
+        }
     }
 
     dataEquals(map: ExceptionData): boolean {

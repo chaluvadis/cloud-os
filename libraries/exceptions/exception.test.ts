@@ -156,4 +156,136 @@ describe('Exception Test Suite', () => {
             expect(action).toThrowError(expectedError);
         });
     });
+
+    describe('equals', () => {
+        test('Should be true when the name, message, innerException, and data are equivalent', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Error('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                new Error('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = true;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be true when the innerExceptions are both null', () => {
+            const exceptionA = new Exception(
+                'message',
+                null,
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                null,
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = true;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be true when the innerExceptions are both exceptions', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Exception('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                new Exception('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = true;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the innerExceptions are an exception and an error', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Exception('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                new Error('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the innerExceptions are an unequal exceptions', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Exception('inner message'),
+                new Map([['key', ['message']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                new Exception(),
+                new Map([['key', ['message']]])
+            );
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the messages do not match', () => {
+            const exceptionA = new Exception('messageA');
+            const exceptionB = new Exception('messageB');
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the names do not match', () => {
+            const exceptionA = new Exception('messageA');
+            exceptionA.name = 'ExceptionA';
+            const exceptionB = new Exception('messageB');
+            exceptionA.name = 'ExceptionB';
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false when the exception data differs', () => {
+            const exceptionA = new Exception(
+                'message',
+                new Exception(),
+                new Map([['key', ['messageA']]])
+            );
+            const exceptionB = new Exception(
+                'message',
+                new Exception(),
+                new Map([['key', ['messageB']]])
+            );
+            const expectedResult = false;
+
+            const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+    });
 });
