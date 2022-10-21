@@ -9,12 +9,15 @@ import { NullExceptionActionException } from '../../../models/exception-handling
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
 import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { Function } from '../../../models/exception-handling/function';
-import { ExceptionHandlingDependencyException } from './exceptions/exception-handling-dependency-exception';
+import { ExceptionHandlingServiceExceptions } from './exception-handling-service.exceptions';
 import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
-import { FailedExceptionActionStorageException } from './exceptions/failed-exception-action-storage-exception';
 
 export class ExceptionHandlingService<T> {
-    constructor(private readonly broker: ExceptionActionBroker) {}
+    private readonly exceptions: ExceptionHandlingServiceExceptions;
+
+    constructor(private readonly broker: ExceptionActionBroker) {
+        this.exceptions = new ExceptionHandlingServiceExceptions();
+    }
 
     tryCatch(func: Function<T>): ExceptionHandlingChainActions<T> {
         this.validateFunction(func);
@@ -51,23 +54,11 @@ export class ExceptionHandlingService<T> {
     ) {
         this.validateExceptionPatterns(exceptionPatternList);
         this.validateExceptionAction(exceptionAction);
-        this.tryCatchBrokerCall(() => {
+        this.exceptions.tryCatch(() => {
             exceptionPatternList.forEach((exceptionConstructor) => {
                 this.broker.addAction(exceptionConstructor, exceptionAction);
             });
         });
-    }
-
-    private tryCatchBrokerCall<T>(func: Function<T>) {
-        try {
-            return func();
-        } catch (error) {
-            const innerException = Exception.fromError(error);
-            const failedException = new FailedExceptionActionStorageException(
-                innerException
-            );
-            throw new ExceptionHandlingDependencyException(failedException);
-        }
     }
 
     private validateExceptionPatterns(
@@ -96,9 +87,9 @@ export class ExceptionHandlingService<T> {
     }
 
     private wrapException(exception: Exception) {
-        const exceptionConstructor =
-            exception.constructor as ExceptionConstructor;
-        return this.tryCatchBrokerCall(() => {
+        return this.exceptions.tryCatch(() => {
+            const exceptionConstructor =
+                exception.constructor as ExceptionConstructor;
             const action = this.broker.getAction(exceptionConstructor);
             if (isNil(action)) {
                 return exception;
