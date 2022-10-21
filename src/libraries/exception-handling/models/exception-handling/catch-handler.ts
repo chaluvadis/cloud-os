@@ -1,4 +1,4 @@
-import { ExceptionConstructor } from '../../../exceptions/exception-constructor';
+import { ExceptionConstructor } from '../../../exceptions';
 import { ExceptionAction } from './exception-action';
 import { ExceptionHandlingChainActions } from './exception-handling-chain-actions';
 

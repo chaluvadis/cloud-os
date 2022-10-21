@@ -1,6 +1,6 @@
 import { isNil } from '../../../../conditions/is-nil';
-import { Exception } from '../../../../exceptions/exception';
-import { ExceptionConstructor } from '../../../../exceptions/exception-constructor';
+import { Exception } from '../../../../exceptions';
+import { ExceptionConstructor } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { AsyncFunction } from '../../../models/exception-handling/async-function';
 import { ExceptionAction } from '../../../models/exception-handling/exception-action';

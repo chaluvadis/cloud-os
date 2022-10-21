@@ -1,4 +1,4 @@
-import { Exception } from '../exceptions/exception';
+import { Exception } from '../exceptions';
 import { ValidationStep } from './models/validation-step';
 
 export class Validator {

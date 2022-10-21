@@ -6,13 +6,13 @@ import {
     reset,
     verify,
 } from 'ts-mockito';
-import { Exception } from '../../../../exceptions/exception';
+import { Exception } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { NullExceptionActionException } from '../../../models/exception-handling/exceptions/null-exception-action-exception';
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
 import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { ExceptionHandlingService } from './exception-handling-service';
-import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
+import { ExceptionHandlingValidationException } from './exceptions-handling-validation-exception';
 
 describe('Exception Handling Service Validations Test Suite', () => {
     const mockedExceptionActionBroker = mock(ExceptionActionBroker);

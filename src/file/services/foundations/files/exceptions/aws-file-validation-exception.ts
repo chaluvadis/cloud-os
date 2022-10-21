@@ -1,4 +1,4 @@
-import { Exception } from '../../../../../libraries/exceptions/exception';
+import { Exception } from '../../../../../libraries/exceptions';
 
 export class AwsFileValidationException extends Exception {
     constructor(innerException: Exception) {

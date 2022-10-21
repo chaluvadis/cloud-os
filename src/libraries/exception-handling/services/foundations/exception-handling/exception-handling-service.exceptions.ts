@@ -1,11 +1,11 @@
-import { Exception } from '../../../../exceptions/exception';
-import { ExceptionConstructor } from '../../../../exceptions/exception-constructor';
+import { Exception } from '../../../../exceptions';
+import { ExceptionConstructor } from '../../../../exceptions';
 import { NullExceptionActionException } from '../../../models/exception-handling/exceptions/null-exception-action-exception';
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
 import { NullFunctionException } from '../../../models/exception-handling/exceptions/null-function-exception';
 import { Function } from '../../../models/exception-handling/function';
-import { ExceptionHandlingServiceException } from './exceptions/exception-handling-service-exception';
-import { ExceptionHandlingValidationException } from './exceptions/exception-handling-validation-exception';
+import { ExceptionHandlingServiceException } from './exceptions-handling-service-exception';
+import { ExceptionHandlingValidationException } from './exceptions-handling-validation-exception';
 import { FailedExceptionActionStorageException } from './exceptions/failed-exception-action-storage-exception';
 
 export class ExceptionHandlingServiceExceptions {

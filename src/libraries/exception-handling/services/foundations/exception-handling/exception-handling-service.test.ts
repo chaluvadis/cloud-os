@@ -7,7 +7,7 @@ import {
     verify,
     when,
 } from 'ts-mockito';
-import { Exception } from '../../../../exceptions/exception';
+import { Exception } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { ExceptionHandlingService } from './exception-handling-service';
 

@@ -1,4 +1,4 @@
-import { Exception } from '../../../../exceptions/exception';
+import { Exception } from '../../../../exceptions';
 
 export class NullFunctionException extends Exception {
     constructor() {

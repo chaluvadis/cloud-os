@@ -1,4 +1,4 @@
-import { Exception } from '../../../../../exceptions/exception';
+import { Exception } from '../../../../../exceptions';
 
 export class ExceptionHandlingValidationException extends Exception {
     constructor(innerException: Exception) {

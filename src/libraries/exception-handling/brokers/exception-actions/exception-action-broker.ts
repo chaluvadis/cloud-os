@@ -1,4 +1,4 @@
-import { ExceptionConstructor } from '../../../exceptions/exception-constructor';
+import { ExceptionConstructor } from '../../../exceptions';
 import { ExceptionAction } from '../../models/exception-handling/exception-action';
 
 export class ExceptionActionBroker {

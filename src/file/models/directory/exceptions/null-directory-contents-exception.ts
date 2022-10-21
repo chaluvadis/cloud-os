@@ -1,4 +1,4 @@
-import { Exception } from '../../../../libraries/exceptions/exception';
+import { Exception } from '../../../../libraries/exceptions';
 
 export class NullDirectoryContentsException extends Exception {
     constructor() {
