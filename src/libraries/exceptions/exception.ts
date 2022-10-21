@@ -11,6 +11,20 @@ export class Exception extends Error {
         this.name = this.constructor.name;
     }
 
+    static fromError(error: any) {
+        if (error instanceof Exception) {
+            return error;
+        } else if (error instanceof Error) {
+            return new Exception(error.message, error);
+        } else if (error instanceof Symbol) {
+            return new Exception(error.toString());
+        } else if (typeof error === 'string') {
+            return new Exception(error);
+        } else {
+            return new Exception(String(error));
+        }
+    }
+
     upsertDataList(key: string, value: string) {
         if (this.data.has(key)) {
             (this.data.get(key) as string[]).push(value);
