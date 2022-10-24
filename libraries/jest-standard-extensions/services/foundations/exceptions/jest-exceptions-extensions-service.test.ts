@@ -106,6 +106,25 @@ describe('Jest Exceptions Extensions Service Test Suite', () => {
 
             expect(actualAssertionResult).toEqual(expectedAssertionResult);
         });
+
+        test('Should return a failing assertion when the result from the action is a promise', () => {
+            const action = () => {
+                return Promise.resolve();
+            };
+            const expectedException = new Exception();
+            const expectedAssertionResult = new AssertionResult(
+                "The action passed to 'expect(action).toThrowException(expectedException) returns a promise. Please use the pattern expect(action).toThrowExceptionAsync(expectedException) for async actions.'",
+                false
+            );
+
+            const actualAssertionResult =
+                service.assertActionThrowsExpectedException(
+                    action,
+                    expectedException
+                );
+
+            expect(actualAssertionResult).toEqual(expectedAssertionResult);
+        });
     });
 
     describe('assertActionThrowsExpectedExceptionAsync', () => {

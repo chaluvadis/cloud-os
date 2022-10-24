@@ -13,7 +13,13 @@ export class JestExceptionsExtensionsService {
             return this.createAssertionResultForInvalidException();
         }
         try {
-            action();
+            const result = action();
+            if (result instanceof Promise) {
+                return new AssertionResult(
+                    "The action passed to 'expect(action).toThrowException(expectedException) returns a promise. Please use the pattern expect(action).toThrowExceptionAsync(expectedException) for async actions.'",
+                    false
+                );
+            }
             return this.createAssertionResultWhenActionDoesNotThrow();
         } catch (error) {
             return this.compareExceptions(error, expectedException);

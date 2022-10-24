@@ -154,7 +154,7 @@ describe('AWS Directory Service Test Suite', () => {
                 Contents: [{}],
             });
 
-            const action = async () =>
+            const action = () =>
                 service.retrieveDirectory(inputDrive, inputDirectoryPath);
             await expect(action).toThrowExceptionAsync(expectedException);
 

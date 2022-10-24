@@ -5,6 +5,7 @@ import { ExceptionActionBroker } from '../../../brokers/exception-actions/except
 import { AsyncFunction } from '../../../models/exception-handling/async-function';
 import { ExceptionAction } from '../../../models/exception-handling/exception-action';
 import { ExceptionHandlingChainActions } from '../../../models/exception-handling/exception-handling-chain-actions';
+import { ExceptionHandlingChainActionsAsync } from '../../../models/exception-handling/exception-handling-chain-actions-async';
 import { Function } from '../../../models/exception-handling/function';
 import { ExceptionHandlingServiceExceptions } from './exception-handling-service.exceptions';
 import { ExceptionHandlingServiceValidations } from './exception-handling-service.validations';
@@ -77,7 +78,7 @@ export class ExceptionHandlingService<T> {
 
     tryCatchAsync(
         func: AsyncFunction<T>
-    ): ExceptionHandlingChainActions<Promise<T>> {
+    ): ExceptionHandlingChainActionsAsync<T> {
         return this.exceptions.tryCatch(() => {
             this.validations.validateFunction(func);
             return this.createExceptionHandlingChainActionsAsync(func);
@@ -85,7 +86,7 @@ export class ExceptionHandlingService<T> {
     }
 
     private createExceptionHandlingChainActionsAsync(func: AsyncFunction<T>) {
-        return new ExceptionHandlingChainActions<Promise<T>>(
+        return new ExceptionHandlingChainActionsAsync<T>(
             (exceptionPatterns, action) =>
                 this.handleCatchAsync(exceptionPatterns, action, func),
             () => this.executeAsync(func)
