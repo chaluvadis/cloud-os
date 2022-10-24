@@ -126,7 +126,7 @@ describe('AWS Directory Service Test Suite', () => {
 
             const action = () =>
                 service.retrieveDirectory(inputDrive, inputDirectoryPath);
-            await expect(action).rejects.toThrow(expectedException);
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
                 mockedBroker.listObjectsInDirectory(
@@ -154,9 +154,9 @@ describe('AWS Directory Service Test Suite', () => {
                 Contents: [{}],
             });
 
-            const action = () =>
+            const action = async () =>
                 service.retrieveDirectory(inputDrive, inputDirectoryPath);
-            await expect(action).rejects.toThrow(expectedException);
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
                 mockedBroker.listObjectsInDirectory(

@@ -75,7 +75,7 @@ describe('AWS File Service Test Suite', () => {
 
             const action = () =>
                 service.retrieveFile(inputDrive, inputFilePath);
-            await expect(action).rejects.toThrow(expectedException);
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
                 mockedBroker.getReadableFileContent(

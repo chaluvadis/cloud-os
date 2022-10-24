@@ -96,7 +96,7 @@ describe('Exception Test Suite', () => {
             );
 
             const action = () => exception.throwIfContainsErrors();
-            expect(action).toThrow();
+            expect(action).toThrowException(exception);
         });
     });
 
