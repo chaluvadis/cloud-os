@@ -1,9 +1,9 @@
 import { Executable } from '../executable/executable';
-import { Exceptionhandlers } from '../exception-handlers/exception-handlers';
+import { ExceptionHandler } from '../exception-handlers/exception-handler';
 
 export class ServiceRuntimeChain<T> {
     constructor(
         public readonly run: Executable<T>,
-        public readonly exceptionHandler: Exceptionhandlers<T>
+        public readonly exceptionHandler: ExceptionHandler<T>
     ) {}
 }
