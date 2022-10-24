@@ -39,7 +39,7 @@ describe('Exception Test Suite', () => {
         });
 
         test('Should return an exception with a message when the error is anything else', () => {
-            const inputError = [];
+            const inputError: any[] = [];
             const expectedError = new Exception(String([]));
 
             const actualError = Exception.fromError(inputError);
@@ -302,6 +302,75 @@ describe('Exception Test Suite', () => {
             const expectedResult = false;
 
             const actualResult = exceptionA.equals(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+    });
+
+    describe('equalsWithDetails', () => {
+        test('Should be true and have no details when the exceptions are equal', () => {
+            const exceptionA = new Exception(
+                'messages',
+                new Exception(),
+                new Map([['key', ['data']]])
+            );
+            const exceptionB = new Exception(
+                'messages',
+                new Exception(),
+                new Map([['key', ['data']]])
+            );
+            const expectedResult = [true, ''];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when the name does not match', () => {
+            const exceptionA = new Exception();
+            const exceptionB = new Exception();
+            exceptionA.name = 'ExceptionA';
+            exceptionB.name = 'ExceptionB';
+            const expectedResult = [
+                false,
+                'Expected exception name to be "ExceptionB", was "ExceptionA".',
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when the messages do not match', () => {
+            const exceptionA = new Exception('messageA');
+            const exceptionB = new Exception('messageB');
+            const expectedResult = [
+                false,
+                'Expected exception message to be "messageB", was "messageA".',
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when the data does not match', () => {
+            const exceptionA = new Exception('messageA');
+            const exceptionB = new Exception(
+                'messageB',
+                null,
+                new Map([['key', ['data']]])
+            );
+            const expectedResult = [
+                false,
+                [
+                    'Expected exception message to be "messageB", was "messageA".',
+                    '- Expected map item count to be 1, but found 0.',
+                    "- Expected to find key 'key'.",
+                ].join('\n'),
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
 
             expect(actualResult).toEqual(expectedResult);
         });

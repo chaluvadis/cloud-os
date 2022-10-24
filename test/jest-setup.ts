@@ -1,2 +1,2 @@
 import 'reflect-metadata';
-import './exception-expect';
+import '../libraries/jest-standard-extensions/index';

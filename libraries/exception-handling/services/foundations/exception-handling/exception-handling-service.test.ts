@@ -144,8 +144,8 @@ describe('Exception Handling Service Test Suite', () => {
             };
 
             const actualChain = service.tryCatchAsync(inputFunction);
-            const action = actualChain.execute();
-            await expect(action).rejects.toThrowException(expectedException);
+            const action = () => actualChain.execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(mockedExceptionActionBroker.getAction(anything())).once();
         });
@@ -185,14 +185,15 @@ describe('Exception Handling Service Test Suite', () => {
             );
 
             const actualChain = service.tryCatchAsync(inputFunction);
-            const action = actualChain
-                .handle([Exception], higherLevelExceptionFactory)
-                .handle(
-                    [HigherLevelException],
-                    () => new Exception('Should not have hit this mapping')
-                )
-                .execute();
-            await expect(action).rejects.toThrowException(expectedException);
+            const action = () =>
+                actualChain
+                    .handle([Exception], higherLevelExceptionFactory)
+                    .handle(
+                        [HigherLevelException],
+                        () => new Exception('Should not have hit this mapping')
+                    )
+                    .execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
                 mockedExceptionActionBroker.addAction(

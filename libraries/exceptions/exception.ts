@@ -11,7 +11,7 @@ export class Exception extends Error {
         this.name = this.constructor.name;
     }
 
-    static fromError(error: any) {
+    static fromError(error: unknown) {
         if (error instanceof Exception) {
             return error;
         } else if (error instanceof Error) {
@@ -54,13 +54,30 @@ export class Exception extends Error {
         this.data.set(key, value);
     }
 
-    equals(other: Exception) {
+    equals(other: Exception): boolean {
         return (
             this.name === other.name &&
             this.message == other.message &&
             this.innerExceptionEquals(other) &&
             this.dataEquals(other.data)
         );
+    }
+
+    equalsWithDetails(other: Exception): [boolean, string] {
+        const messageBuilder = new ExceptionMessageBuilder();
+        if (this.name !== other.name) {
+            messageBuilder.append(
+                `Expected exception name to be "${other.name}", was "${this.name}".`
+            );
+        }
+        if (this.message !== other.message) {
+            messageBuilder.append(
+                `Expected exception message to be "${other.message}", was "${this.message}".`
+            );
+        }
+        const [, details] = this.dataEqualsWithDetails(other.data);
+        messageBuilder.append(details);
+        return [this.equals(other), messageBuilder.toString().trim()];
     }
 
     private innerExceptionEquals(other: Exception) {
@@ -109,13 +126,13 @@ export class Exception extends Error {
             messageBuilder,
             additionalItems
         );
-        isEqual = this.evaluteMissingKeys(
+        isEqual = this.evaluateMissingKeys(
             isEqual,
             messageBuilder,
             missingItems
         );
         isEqual = this.evaluateSharedKeys(isEqual, messageBuilder, sharedItems);
-        return [isEqual, messageBuilder.toString()];
+        return [isEqual, messageBuilder.toString().trim()];
     }
 
     private evaluateAdditionalKeys(
@@ -132,7 +149,7 @@ export class Exception extends Error {
         return false;
     }
 
-    private evaluteMissingKeys(
+    private evaluateMissingKeys(
         isEqual: boolean,
         messageBuilder: ExceptionMessageBuilder,
         missingItems: ExceptionData

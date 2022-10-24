@@ -128,8 +128,8 @@ describe('Exception Handling Service Exceptions Test Suite', () => {
                 innerError
             );
 
-            const action = service.tryCatchAsync(inputFunction).execute();
-            await expect(action).rejects.toThrowException(expectedException);
+            const action = () => service.tryCatchAsync(inputFunction).execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(mockedExceptionActionBroker.getAction(anything())).once();
         });
