@@ -1,6 +1,6 @@
-import { Exception } from '../../exceptions';
-import { ValidationStep } from '../models/validation-step';
-import { ValidationService } from '../services/foundations/validation-service';
+import { Exception } from '../../../exceptions';
+import { ValidationStep } from '../../models/validations/validation-step';
+import { ValidationService } from '../../services/foundations/validations/validation-service';
 
 export class ValidationClient {
     private readonly validationService: ValidationService;

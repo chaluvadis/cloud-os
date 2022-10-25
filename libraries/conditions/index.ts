@@ -1,4 +1,4 @@
-import { ConditionClient } from './clients/condition-client';
+import { ConditionClient } from './clients/conditions/condition-client';
 
 const client = new ConditionClient();
 

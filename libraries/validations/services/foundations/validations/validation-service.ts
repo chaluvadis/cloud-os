@@ -1,5 +1,5 @@
-import { Exception } from '../../../exceptions';
-import { ValidationStep } from '../../models/validation-step';
+import { Exception } from '../../../../exceptions';
+import { ValidationStep } from '../../../models/validations/validation-step';
 
 export class ValidationService {
     validate(exception: Exception, validationStepList: ValidationStep[]) {

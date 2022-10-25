@@ -1,4 +1,4 @@
-import { ConditionService } from '../services/foundations/condition-service';
+import { ConditionService } from '../../services/foundations/conditions/condition-service';
 
 export class ConditionClient {
     private readonly conditionService: ConditionService;

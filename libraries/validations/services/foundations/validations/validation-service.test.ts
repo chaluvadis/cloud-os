@@ -1,6 +1,6 @@
-import { Exception } from '../../../exceptions';
-import { ValidationRule } from '../../models/validation-rule';
-import { ValidationStep } from '../../models/validation-step';
+import { Exception } from '../../../../exceptions';
+import { ValidationRule } from '../../../models/validations/validation-rule';
+import { ValidationStep } from '../../../models/validations/validation-step';
 import { ValidationService } from './validation-service';
 
 describe('Validation Service Test Suite', () => {

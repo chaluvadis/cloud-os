@@ -1,5 +1,5 @@
-import { ExceptionData } from './models/exception-data';
-import { ExceptionMessageBuilder } from './exception-message-builder';
+import { ExceptionData } from './exception-data';
+import { ExceptionMessageBuilder } from '../message-builders/exception-message-builder';
 
 export class Exception extends Error {
     constructor(

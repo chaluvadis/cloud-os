@@ -1,3 +1,3 @@
-import { Exception } from '../exception';
+import { Exception } from './exception';
 
 export type ExceptionConstructor = new (...args: any[]) => Exception;

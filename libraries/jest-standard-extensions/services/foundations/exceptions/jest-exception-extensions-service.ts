@@ -1,7 +1,7 @@
 import { Exception } from '../../../../exceptions';
 import { AssertionResult } from '../../../models/assertion-result/assertion-result';
 
-export class JestExceptionsExtensionsService {
+export class JestExceptionExtensionsService {
     assertActionThrowsExpectedException(
         action: unknown,
         expectedException: unknown

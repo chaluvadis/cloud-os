@@ -1,9 +1,9 @@
 import { Exception } from '../../../../exceptions';
 import { AssertionResult } from '../../../models/assertion-result/assertion-result';
-import { JestExceptionsExtensionsService } from './jest-exceptions-extensions-service';
+import { JestExceptionExtensionsService } from './jest-exception-extensions-service';
 
-describe('Jest Exceptions Extensions Service Test Suite', () => {
-    const service = new JestExceptionsExtensionsService();
+describe('Jest Exception Extensions Service Test Suite', () => {
+    const service = new JestExceptionExtensionsService();
 
     describe('assertActionThrowsExpectedException', () => {
         test('Should return a passing assertion when the action throws the expected exception', () => {

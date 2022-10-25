@@ -1,6 +1,6 @@
 import { Exception } from '../exceptions';
-import { ValidationClient } from './clients/validation-client';
-import { ValidationStep } from './models/validation-step';
+import { ValidationClient } from './clients/validations/validation-client';
+import { ValidationStep } from './models/validations/validation-step';
 
 const client = new ValidationClient();
 
