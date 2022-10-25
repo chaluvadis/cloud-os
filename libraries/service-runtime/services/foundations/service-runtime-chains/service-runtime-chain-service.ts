@@ -1,13 +1,26 @@
 import { ExceptionHandlerExecutor } from '../../../models/exception-handlers/exception-handler-executor';
 import { Executable } from '../../../models/executable/executable';
 import { ServiceRuntimeChain } from '../../../models/service-runtime-chains/service-runtime-chain';
+import { ServiceRuntimeChainServiceExceptions } from './service-runtime-chain-service.exceptions';
 import { IServiceRuntimeChainService } from './service-runtime-chain-service.interface';
+import { ServiceRuntimeChainServiceValidations } from './service-runtime-chain-service.validations';
 
 export class ServiceRuntimeChainService implements IServiceRuntimeChainService {
+    private readonly validations: ServiceRuntimeChainServiceValidations;
+    private readonly exceptions: ServiceRuntimeChainServiceExceptions;
+
+    constructor() {
+        this.validations = new ServiceRuntimeChainServiceValidations();
+        this.exceptions = new ServiceRuntimeChainServiceExceptions();
+    }
+
     createServiceRuntimeChain<T>(
         executable: Executable<T>
     ): ServiceRuntimeChain<T> {
-        return this.instantiateServiceRuntimeChain(executable);
+        return this.exceptions.createServiceRuntimeChainHandler(() => {
+            this.validations.validateExecutable(executable);
+            return this.instantiateServiceRuntimeChain(executable);
+        });
     }
 
     private instantiateServiceRuntimeChain<T>(executable: Executable<T>) {
@@ -23,12 +36,15 @@ export class ServiceRuntimeChainService implements IServiceRuntimeChainService {
     }
 
     private exceptionHandler<T>(
-        exceptionHandler: ExceptionHandlerExecutor<T>,
+        executor: ExceptionHandlerExecutor<T>,
         executable: Executable<T>
     ): ServiceRuntimeChain<T> {
-        return this.instantiateServiceRuntimeChain(() =>
-            exceptionHandler(executable)
-        );
+        return this.exceptions.createServiceRuntimeChainHandler(() => {
+            this.validations.validateExceptionHandlerExecutor(executor);
+            return this.instantiateServiceRuntimeChain(() =>
+                executor(executable)
+            );
+        });
     }
 
     createAsyncServiceRuntimeChain<T>(
