@@ -1,4 +1,4 @@
-import { Exception } from '../../libraries/exceptions';
+import { Exception } from '../../exceptions';
 
 declare global {
     namespace jest {
@@ -8,5 +8,3 @@ declare global {
         }
     }
 }
-
-export {};
