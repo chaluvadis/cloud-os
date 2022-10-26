@@ -1,8 +1,9 @@
 import { Exception } from '../../../exceptions';
 import { ValidationStep } from '../../models/validations/validation-step';
 import { ValidationService } from '../../services/foundations/validations/validation-service';
+import { IValidationClient } from './validation-client.interface';
 
-export class ValidationClient {
+export class ValidationClient implements IValidationClient {
     private readonly validationService: ValidationService;
 
     constructor() {
