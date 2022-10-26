@@ -8,9 +8,12 @@ import { ExceptionHandlingChainActions } from '../../../models/exception-handlin
 import { ExceptionHandlingChainActionsAsync } from '../../../models/exception-handling/exception-handling-chain-actions-async';
 import { Function } from '../../../models/exception-handling/function';
 import { ExceptionHandlingServiceExceptions } from './exception-handling-service.exceptions';
+import { IExceptionHandlingService } from './exception-handling-service.interface';
 import { ExceptionHandlingServiceValidations } from './exception-handling-service.validations';
 
-export class ExceptionHandlingService<T> {
+export class ExceptionHandlingService<T>
+    implements IExceptionHandlingService<T>
+{
     private readonly exceptions: ExceptionHandlingServiceExceptions;
     private readonly validations: ExceptionHandlingServiceValidations<T>;
 

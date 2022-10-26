@@ -1,7 +1,8 @@
 import { ExceptionConstructor } from '../../../exceptions';
 import { ExceptionAction } from '../../models/exception-handling/exception-action';
+import { IExceptionActionBroker } from './exception-action-broker.interface';
 
-export class ExceptionActionBroker {
+export class ExceptionActionBroker implements IExceptionActionBroker {
     private readonly actionMapping: Map<ExceptionConstructor, ExceptionAction>;
 
     constructor() {

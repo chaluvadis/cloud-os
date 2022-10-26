@@ -4,23 +4,23 @@ import { ExceptionHandlingChainActions } from '../../models/exception-handling/e
 import { ExceptionHandlingChainActionsAsync } from '../../models/exception-handling/exception-handling-chain-actions-async';
 import { Function } from '../../models/exception-handling/function';
 import { ExceptionHandlingService } from '../../services/foundations/exception-handling/exception-handling-service';
+import { IExceptionHandlingClient } from './exception-handling-client.interface';
 
-export class ExceptionHandlingClient {
-    static tryCatch<T>(func: Function<T>): ExceptionHandlingChainActions<T> {
-        const service = new ExceptionHandlingService<T>(
+export class ExceptionHandlingClient<T> implements IExceptionHandlingClient<T> {
+    private readonly service: ExceptionHandlingService<T>;
+
+    constructor() {
+        this.service = new ExceptionHandlingService<T>(
             new ExceptionActionBroker()
         );
-
-        return service.tryCatch(func);
+    }
+    tryCatch(func: Function<T>): ExceptionHandlingChainActions<T> {
+        return this.service.tryCatch(func);
     }
 
-    static tryCatchAsync<T>(
+    tryCatchAsync(
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActionsAsync<T> {
-        const service = new ExceptionHandlingService<T>(
-            new ExceptionActionBroker()
-        );
-
-        return service.tryCatchAsync(func);
+        return this.service.tryCatchAsync(func);
     }
 }
