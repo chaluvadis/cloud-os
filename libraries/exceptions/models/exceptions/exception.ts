@@ -59,14 +59,8 @@ export class Exception extends Error {
     }
 
     equals(other: Exception): boolean {
-        const [innerEquality, innerDetails] =
-            this.innerExceptionEqualsWithDetails(other);
-        return (
-            this.name === other.name &&
-            this.message == other.message &&
-            innerEquality &&
-            this.dataEquals(other.data)
-        );
+        const [isEqual] = this.equalsWithDetails(other);
+        return isEqual;
     }
 
     equalsWithDetails(other: Exception): [boolean, string] {

@@ -55,7 +55,7 @@ describe('Service Runtime Chain Service Test Suite', () => {
                     }
                 }
             );
-            const expectedException = new Exception('', thrownError);
+            const expectedException = Exception.fromError(thrownError);
 
             const action = () =>
                 service

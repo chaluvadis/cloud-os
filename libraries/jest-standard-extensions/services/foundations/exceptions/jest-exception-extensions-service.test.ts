@@ -29,7 +29,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
             });
             const expectedException = new Exception(
                 'A message',
-                new Error(),
+                Exception.fromError(new Error()),
                 new Map([['key', ['some data']]])
             );
             expectedException.name = 'RandomException';
@@ -39,6 +39,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
                     'Expected exception message to be "A message", was "".',
                     '- Expected map item count to be 1, but found 0.',
                     "- Expected to find key 'key'.",
+                    'Expected an inner exception of type [RandomException].',
                 ].join('\n'),
                 false
             );
@@ -151,7 +152,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
             });
             const expectedException = new Exception(
                 'A message',
-                new Error(),
+                Exception.fromError(new Error()),
                 new Map([['key', ['some data']]])
             );
             expectedException.name = 'RandomException';
@@ -161,6 +162,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
                     'Expected exception message to be "A message", was "".',
                     '- Expected map item count to be 1, but found 0.',
                     "- Expected to find key 'key'.",
+                    'Expected an inner exception of type [RandomException].',
                 ].join('\n'),
                 false
             );
