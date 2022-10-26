@@ -2,7 +2,7 @@ import { Exception } from './exception';
 
 describe('Exception Test Suite', () => {
     describe('fromError', () => {
-        test('Should return itself when the error is an exception', () => {
+        test('Should return itself when the parameter is an exception', () => {
             const inputError = new Exception();
             const expectedError = new Exception();
 
@@ -11,16 +11,18 @@ describe('Exception Test Suite', () => {
             expect(actualError.equals(expectedError)).toBeTruthy();
         });
 
-        test('Should return a new exception when the error is an error', () => {
+        test('Should return a new exception when the parameter is an error', () => {
             const inputError = new Error('message');
-            const expectedError = new Exception('message', inputError);
+            const expectedError = new Exception('message');
+            expectedError.name = inputError.name;
+            expectedError.stack = inputError.stack;
 
             const actualError = Exception.fromError(inputError);
 
             expect(actualError.equals(expectedError)).toBeTruthy();
         });
 
-        test('Should return an exception with a message when the error is a symbol', () => {
+        test('Should return an exception with a message when the parameter is a symbol', () => {
             const inputError = Symbol.for('error');
             const expectedError = new Exception('Symbol(error)');
 
@@ -29,7 +31,7 @@ describe('Exception Test Suite', () => {
             expect(actualError.equals(expectedError)).toBeTruthy();
         });
 
-        test('Should return an exception with a message when the error is a string', () => {
+        test('Should return an exception with a message when the parameter is a string', () => {
             const inputError = 'error';
             const expectedError = new Exception('error');
 
@@ -38,7 +40,7 @@ describe('Exception Test Suite', () => {
             expect(actualError.equals(expectedError)).toBeTruthy();
         });
 
-        test('Should return an exception with a message when the error is anything else', () => {
+        test('Should return an exception with a message when the parameter is anything else', () => {
             const inputError: any[] = [];
             const expectedError = new Exception(String([]));
 
@@ -147,7 +149,7 @@ describe('Exception Test Suite', () => {
                 new Map([['key', ['messages']]])
             );
             const inputKey = 'key';
-            const expectedError = new Error(
+            const expectedError = new Exception(
                 `Exception data already contains the key: ${inputKey}.`
             );
 
@@ -161,12 +163,12 @@ describe('Exception Test Suite', () => {
         test('Should be true when the name, message, innerException, and data are equivalent', () => {
             const exceptionA = new Exception(
                 'message',
-                new Error('inner message'),
+                new Exception('inner message'),
                 new Map([['key', ['message']]])
             );
             const exceptionB = new Exception(
                 'message',
-                new Error('inner message'),
+                new Exception('inner message'),
                 new Map([['key', ['message']]])
             );
             const expectedResult = true;
@@ -206,24 +208,6 @@ describe('Exception Test Suite', () => {
                 new Map([['key', ['message']]])
             );
             const expectedResult = true;
-
-            const actualResult = exceptionA.equals(exceptionB);
-
-            expect(actualResult).toEqual(expectedResult);
-        });
-
-        test('Should be false when the innerExceptions are an exception and an error', () => {
-            const exceptionA = new Exception(
-                'message',
-                new Exception('inner message'),
-                new Map([['key', ['message']]])
-            );
-            const exceptionB = new Exception(
-                'message',
-                new Error('inner message'),
-                new Map([['key', ['message']]])
-            );
-            const expectedResult = false;
 
             const actualResult = exceptionA.equals(exceptionB);
 
@@ -334,6 +318,51 @@ describe('Exception Test Suite', () => {
             const expectedResult = [
                 false,
                 'Expected exception name to be "ExceptionB", was "ExceptionA".',
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when an inner exception is expected', () => {
+            const exceptionA = new Exception('message');
+            const exceptionB = new Exception('message', new Exception());
+            const expectedResult = [
+                false,
+                'Expected an inner exception of type [Exception].',
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when an inner exception is not expected', () => {
+            const exceptionA = new Exception('message', new Exception());
+            const exceptionB = new Exception('message');
+            const expectedResult = [
+                false,
+                'Did not expect an inner exception of type [Exception].',
+            ];
+
+            const actualResult = exceptionA.equalsWithDetails(exceptionB);
+
+            expect(actualResult).toEqual(expectedResult);
+        });
+
+        test('Should be false and have details when the inner exception does not match', () => {
+            const exceptionA = new Exception('message', new Exception());
+            const exceptionB = new Exception(
+                'message',
+                new Exception('inner message')
+            );
+            const expectedResult = [
+                false,
+                [
+                    '[Exception]:',
+                    '\tExpected exception message to be "inner message", was "".',
+                ].join('\n'),
             ];
 
             const actualResult = exceptionA.equalsWithDetails(exceptionB);

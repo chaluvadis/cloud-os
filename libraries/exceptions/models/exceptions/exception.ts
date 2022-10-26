@@ -1,10 +1,11 @@
 import { ExceptionData } from './exception-data';
 import { ExceptionMessageBuilder } from '../message-builders/exception-message-builder';
+import { isNil } from '../../../conditions';
 
 export class Exception extends Error {
     constructor(
         public readonly message: string = '',
-        public readonly innerException: Error | null = null,
+        public readonly innerException: Exception | null = null,
         public readonly data: ExceptionData = new Map()
     ) {
         super(message);
@@ -15,7 +16,10 @@ export class Exception extends Error {
         if (error instanceof Exception) {
             return error;
         } else if (error instanceof Error) {
-            return new Exception(error.message, error);
+            const exception = new Exception(error.message);
+            exception.name = error.name;
+            exception.stack = error.stack;
+            return exception;
         } else if (typeof error === 'symbol') {
             return new Exception(error.toString());
         } else if (typeof error === 'string') {
@@ -55,10 +59,12 @@ export class Exception extends Error {
     }
 
     equals(other: Exception): boolean {
+        const [innerEquality, innerDetails] =
+            this.innerExceptionEqualsWithDetails(other);
         return (
             this.name === other.name &&
             this.message == other.message &&
-            this.innerExceptionEquals(other) &&
+            innerEquality &&
             this.dataEquals(other.data)
         );
     }
@@ -77,29 +83,46 @@ export class Exception extends Error {
         }
         const [, details] = this.dataEqualsWithDetails(other.data);
         messageBuilder.append(details);
-        return [this.equals(other), messageBuilder.toString().trim()];
+        const [innerExceptionEqual, innerDetails] =
+            this.innerExceptionEqualsWithDetails(other);
+        messageBuilder.append(innerDetails);
+        return [
+            this.name === other.name &&
+                this.message === other.message &&
+                innerExceptionEqual &&
+                this.dataEquals(other.data),
+            messageBuilder.toString().trim(),
+        ];
     }
 
-    private innerExceptionEquals(other: Exception) {
-        if (other.innerException === null && this.innerException === null) {
-            return true;
+    private innerExceptionEqualsWithDetails(
+        other: Exception
+    ): [boolean, string] {
+        const messageBuilder = new ExceptionMessageBuilder();
+        if (isNil(this.innerException) && isNil(other.innerException)) {
+            return [true, messageBuilder.toString()];
         }
-        if (
-            other.innerException instanceof Exception &&
-            this.innerException instanceof Exception
-        ) {
-            return this.innerException.equals(other.innerException);
-        } else if (
-            other.innerException instanceof Error &&
-            this.innerException instanceof Error
-        ) {
-            return (
-                other.innerException.name === this.innerException.name &&
-                other.innerException.message === this.innerException.message
+        if (!isNil(this.innerException) && isNil(other.innerException)) {
+            messageBuilder.append(
+                `Did not expect an inner exception of type [${this.name}].`
             );
-        } else {
-            return false;
+            return [false, messageBuilder.toString()];
         }
+        if (isNil(this.innerException) && !isNil(other.innerException)) {
+            messageBuilder.append(
+                `Expected an inner exception of type [${other.name}].`
+            );
+            return [false, messageBuilder.toString()];
+        }
+        const thisInnerException = this.innerException as Exception;
+        const otherInnerException = other.innerException as Exception;
+        const [innerEquality, innerDetails] =
+            thisInnerException.equalsWithDetails(otherInnerException);
+        if (!innerEquality) {
+            messageBuilder.append(`[${thisInnerException.name}]:`);
+            messageBuilder.append(`\t${innerDetails.replace(/\\n/g, '\n\t')}`);
+        }
+        return [innerEquality, messageBuilder.toString()];
     }
 
     dataEquals(map: ExceptionData): boolean {
