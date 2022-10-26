@@ -1,7 +1,10 @@
 import { Exception } from '../../../../exceptions';
 import { AssertionResult } from '../../../models/assertion-result/assertion-result';
+import { IJestExceptionExtensionsService } from './jest-exception-extensions-service.interface';
 
-export class JestExceptionExtensionsService {
+export class JestExceptionExtensionsService
+    implements IJestExceptionExtensionsService
+{
     assertActionThrowsExpectedException(
         action: unknown,
         expectedException: unknown
