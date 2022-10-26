@@ -3,9 +3,11 @@ import { AsyncFunction } from './models/exception-handling/async-function';
 import { Function } from './models/exception-handling/function';
 
 export function tryCatch<T>(func: Function<T>) {
-    return ExceptionHandlingClient.tryCatch(func);
+    const client = new ExceptionHandlingClient<T>();
+    return client.tryCatch(func);
 }
 
 export function tryCatchAsync<T>(func: AsyncFunction<T>) {
-    return ExceptionHandlingClient.tryCatchAsync(func);
+    const client = new ExceptionHandlingClient<T>();
+    return client.tryCatchAsync(func);
 }
