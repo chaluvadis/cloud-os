@@ -8,9 +8,11 @@ import { NullDriveException } from '../../../../drive/models/exceptions/null-dri
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { S3ServiceException } from '@aws-sdk/client-s3';
 import { AWSFileDependencyException } from './exceptions/aws-file-dependency-exception';
+import { FailedFileRetrievalException } from './exceptions/failed-file-retrieval-exception';
+import { AwsFileServiceException } from './exceptions/aws-file-service-exception';
 
 export class AWSFileServiceExceptions {
-    retriveFileAsync(logic: Action<Promise<File>>) {
+    retrieveFileAsync(logic: Action<Promise<File>>) {
         return tryCatchAsync(logic)
             .handle(
                 [
@@ -25,6 +27,12 @@ export class AWSFileServiceExceptions {
                 [S3ServiceException],
                 (exception) => new AWSFileDependencyException(exception)
             )
+            .catchAll((exception) => {
+                const failedFileRetrieval = new FailedFileRetrievalException(
+                    exception
+                );
+                return new AwsFileServiceException(failedFileRetrieval);
+            })
             .execute();
     }
 }

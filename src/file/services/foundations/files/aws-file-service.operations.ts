@@ -12,7 +12,7 @@ export class AWSFileServiceOperations {
 
     retriveFileAsync(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.retriveFileAsync)
+            .exceptionHandler(this.exceptions.retrieveFileAsync)
             .run();
     }
 }
