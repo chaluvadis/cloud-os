@@ -99,8 +99,11 @@ export class ExceptionHandlingService<T>
     }
 
     private handleDefault(action: ExceptionAction, func: Function<T>) {
-        this.broker.setDefault(action);
-        return this.createExceptionHandlingChainActions(func);
+        return this.exceptions.handleDefault(() => {
+            this.validations.validateExceptionAction(action);
+            this.broker.setDefault(action);
+            return this.createExceptionHandlingChainActions(func);
+        });
     }
 
     tryCatchAsync(
@@ -127,7 +130,7 @@ export class ExceptionHandlingService<T>
         exceptionPatternList: ErrorConstructor[],
         action: ExceptionAction,
         func: AsyncFunction<T>
-    ): ExceptionHandlingChainActions<Promise<T>> {
+    ): AsyncExceptionHandlingChainActions<T> {
         return this.exceptions.handleCatch(() => {
             this.addExceptionPatterns(exceptionPatternList, action);
             return this.createAsyncExceptionHandlingChainActions(func);
@@ -145,8 +148,11 @@ export class ExceptionHandlingService<T>
     private handleAsyncDefault(
         action: ExceptionAction,
         func: AsyncFunction<T>
-    ) {
-        this.broker.setDefault(action);
-        return this.createAsyncExceptionHandlingChainActions(func);
+    ): AsyncExceptionHandlingChainActions<T> {
+        return this.exceptions.handleDefault(() => {
+            this.validations.validateExceptionAction(action);
+            this.broker.setDefault(action);
+            return this.createAsyncExceptionHandlingChainActions(func);
+        });
     }
 }

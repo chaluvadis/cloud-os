@@ -58,7 +58,7 @@ describe('Exception Handling Service Validations Test Suite', () => {
             ).never();
         });
 
-        test('Should throw a validation exception when a null action is provided', () => {
+        test('Should throw a validation exception when a null action is provided to handle', () => {
             const inputFunction = () => {};
             const nullException = new NullExceptionActionException();
             const defaultAction = null as any;
@@ -68,6 +68,23 @@ describe('Exception Handling Service Validations Test Suite', () => {
 
             const action = () =>
                 service.tryCatch(inputFunction).handle([], defaultAction);
+            expect(action).toThrowException(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.addAction(anything(), anyFunction())
+            ).never();
+        });
+
+        test('Should throw a validation exception when a null action is provided to catchAll', () => {
+            const inputFunction = () => {};
+            const nullException = new NullExceptionActionException();
+            const defaultAction = null as any;
+            const expectedException = new ExceptionHandlingValidationException(
+                nullException
+            );
+
+            const action = () =>
+                service.tryCatch(inputFunction).catchAll(defaultAction);
             expect(action).toThrowException(expectedException);
 
             verify(
@@ -123,6 +140,23 @@ describe('Exception Handling Service Validations Test Suite', () => {
 
             const action = () =>
                 service.tryCatchAsync(inputFunction).handle([], defaultAction);
+            expect(action).toThrowException(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.addAction(anything(), anyFunction())
+            ).never();
+        });
+
+        test('Should throw a validation exception when a null action is provided to catchAll', () => {
+            const inputFunction = async () => {};
+            const nullException = new NullExceptionActionException();
+            const defaultAction = null as any;
+            const expectedException = new ExceptionHandlingValidationException(
+                nullException
+            );
+
+            const action = () =>
+                service.tryCatchAsync(inputFunction).catchAll(defaultAction);
             expect(action).toThrowException(expectedException);
 
             verify(

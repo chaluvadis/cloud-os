@@ -57,4 +57,20 @@ export class ExceptionHandlingServiceExceptions {
             throw this.createDefaultServiceException(exception);
         }
     }
+
+    handleDefault<T>(func: Function<T>) {
+        try {
+            return func();
+        } catch (error) {
+            const exception = Exception.fromError(error);
+            const exceptionConstructor =
+                exception.constructor as ExceptionConstructor;
+            switch (exceptionConstructor) {
+                case NullExceptionActionException:
+                    throw new ExceptionHandlingValidationException(exception);
+                default:
+                    throw this.createDefaultServiceException(exception);
+            }
+        }
+    }
 }
