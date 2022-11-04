@@ -2,10 +2,11 @@ import { Readable } from 'stream';
 import { Drive } from '../../../../drive/models/drive';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { File } from '../../../models/file/file';
+import { IAWSFileService } from './aws-file-service.interface';
 import { AWSFileServiceOperations } from './aws-file-service.operations';
 import { AWSFileServiceValidations } from './aws-file-service.validations';
 
-export class AWSFileService {
+export class AWSFileService implements IAWSFileService {
     private readonly operations: AWSFileServiceOperations;
     private readonly validations: AWSFileServiceValidations;
 
