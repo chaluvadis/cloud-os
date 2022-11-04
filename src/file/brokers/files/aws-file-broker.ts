@@ -9,8 +9,9 @@ import {
 } from '@aws-sdk/client-s3';
 import { Drive } from '../../../drive/models/drive';
 import { File } from '../../models/file/file';
+import { IAWSFileBroker } from './aws-file-broker.interface';
 
-export class AWSFileBroker {
+export class AWSFileBroker implements IAWSFileBroker {
     constructor(private readonly s3Client: S3Client) {}
 
     getReadableFileContent(
