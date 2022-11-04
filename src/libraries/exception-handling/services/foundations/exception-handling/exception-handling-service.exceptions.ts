@@ -20,12 +20,12 @@ export class ExceptionHandlingServiceExceptions {
                 case NullFunctionException:
                     throw new ExceptionHandlingValidationException(exception);
                 default:
-                    throw this.createDefaultServiceException(exception);
+                    throw this.createFailedActionStorageException(exception);
             }
         }
     }
 
-    private createDefaultServiceException(exception: Exception) {
+    private createFailedActionStorageException(exception: Exception) {
         const failedException = new FailedExceptionActionStorageException(
             exception
         );
@@ -44,7 +44,7 @@ export class ExceptionHandlingServiceExceptions {
                 case NullExceptionActionException:
                     throw new ExceptionHandlingValidationException(exception);
                 default:
-                    throw this.createDefaultServiceException(exception);
+                    throw this.createFailedActionStorageException(exception);
             }
         }
     }
@@ -54,7 +54,7 @@ export class ExceptionHandlingServiceExceptions {
             return func();
         } catch (error) {
             const exception = Exception.fromError(error);
-            throw this.createDefaultServiceException(exception);
+            throw this.createFailedActionStorageException(exception);
         }
     }
 
@@ -69,7 +69,7 @@ export class ExceptionHandlingServiceExceptions {
                 case NullExceptionActionException:
                     throw new ExceptionHandlingValidationException(exception);
                 default:
-                    throw this.createDefaultServiceException(exception);
+                    throw this.createFailedActionStorageException(exception);
             }
         }
     }

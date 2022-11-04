@@ -71,6 +71,57 @@ describe('Exception Handling Service Exceptions Test Suite', () => {
 
             verify(mockedExceptionActionBroker.getAction(anything())).once();
         });
+
+        test('Should throw a service exception when getting the default throws an exception', () => {
+            const inputFunction = () => {
+                throw new Error();
+            };
+            const innerError = new Error('Failed to get default');
+            const innerException = Exception.fromError(innerError);
+            const failedException = new FailedExceptionActionStorageException(
+                innerException
+            );
+            const expectedException = new ExceptionHandlingServiceException(
+                failedException
+            );
+            when(mockedExceptionActionBroker.getAction(Exception)).thenReturn(
+                () => new Exception()
+            );
+            when(mockedExceptionActionBroker.getDefault()).thenThrow(
+                innerError
+            );
+
+            const action = () => service.tryCatch(inputFunction).execute();
+            expect(action).toThrowException(expectedException);
+
+            verify(mockedExceptionActionBroker.getAction(anyFunction())).once();
+            verify(mockedExceptionActionBroker.getDefault()).once();
+        });
+
+        test('Should throw a service exception when setting the default throws an exception', () => {
+            const inputFunction = () => {
+                throw new Error();
+            };
+            const innerError = new Error('Failed to get default');
+            const innerException = Exception.fromError(innerError);
+            const failedException = new FailedExceptionActionStorageException(
+                innerException
+            );
+            const expectedException = new ExceptionHandlingServiceException(
+                failedException
+            );
+            when(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).thenThrow(innerError);
+
+            const action = () =>
+                service.tryCatch(inputFunction).catchAll(() => new Exception());
+            expect(action).toThrowException(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).once();
+        });
     });
 
     describe('tryCatchAsync', () => {
@@ -120,6 +171,59 @@ describe('Exception Handling Service Exceptions Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(mockedExceptionActionBroker.getAction(anything())).once();
+        });
+
+        test('Should throw a service exception when getting the default throws an exception', async () => {
+            const inputFunction = async () => {
+                throw new Error();
+            };
+            const innerError = new Error('Failed to get default');
+            const innerException = Exception.fromError(innerError);
+            const failedException = new FailedExceptionActionStorageException(
+                innerException
+            );
+            const expectedException = new ExceptionHandlingServiceException(
+                failedException
+            );
+            when(mockedExceptionActionBroker.getAction(Exception)).thenReturn(
+                () => new Exception()
+            );
+            when(mockedExceptionActionBroker.getDefault()).thenThrow(
+                innerError
+            );
+
+            const action = () => service.tryCatchAsync(inputFunction).execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(mockedExceptionActionBroker.getAction(anything())).once();
+            verify(mockedExceptionActionBroker.getDefault()).once();
+        });
+
+        test('Should throw a service exception when setting the default throws an exception', async () => {
+            const inputFunction = async () => {
+                throw new Error();
+            };
+            const innerError = new Error('Failed to get default');
+            const innerException = Exception.fromError(innerError);
+            const failedException = new FailedExceptionActionStorageException(
+                innerException
+            );
+            const expectedException = new ExceptionHandlingServiceException(
+                failedException
+            );
+            when(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).thenThrow(innerError);
+
+            const action = () =>
+                service
+                    .tryCatchAsync(inputFunction)
+                    .catchAll(() => new Exception());
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).once();
         });
     });
 });
