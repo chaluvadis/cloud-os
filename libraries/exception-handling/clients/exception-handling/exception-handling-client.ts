@@ -14,6 +14,7 @@ export class ExceptionHandlingClient<T> implements IExceptionHandlingClient<T> {
             new ExceptionActionBroker()
         );
     }
+
     tryCatch(func: Function<T>): ExceptionHandlingChainActions<T> {
         return this.service.tryCatch(func);
     }

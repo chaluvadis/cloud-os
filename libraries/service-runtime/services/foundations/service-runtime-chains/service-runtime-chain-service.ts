@@ -50,6 +50,37 @@ export class ServiceRuntimeChainService implements IServiceRuntimeChainService {
     createAsyncServiceRuntimeChain<T>(
         executable: Executable<Promise<T>>
     ): ServiceRuntimeChain<Promise<T>> {
-        throw new Error();
+        return this.exceptions.createServiceRuntimeChainHandler(() => {
+            this.validations.validateExecutable(executable);
+            return this.instantiateAsyncServiceRuntimeChain(executable);
+        });
+    }
+
+    private instantiateAsyncServiceRuntimeChain<T>(
+        executable: Executable<Promise<T>>
+    ) {
+        return new ServiceRuntimeChain<Promise<T>>(
+            () => this.executeAsync(executable),
+            (exceptionHandler) =>
+                this.exceptionHandlerAsync(exceptionHandler, executable)
+        );
+    }
+
+    private async executeAsync<T>(
+        executable: Executable<Promise<T>>
+    ): Promise<T> {
+        return await executable();
+    }
+
+    private exceptionHandlerAsync<T>(
+        executor: ExceptionHandlerExecutor<Promise<T>>,
+        executable: Executable<Promise<T>>
+    ): ServiceRuntimeChain<Promise<T>> {
+        return this.exceptions.createServiceRuntimeChainHandler(() => {
+            this.validations.validateExceptionHandlerExecutor(executor);
+            return this.instantiateServiceRuntimeChain(() =>
+                executor(executable)
+            );
+        });
     }
 }
