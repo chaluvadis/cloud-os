@@ -11,15 +11,15 @@ export class AWSFileSystemOrchestrationService {
     ) {}
 
     readFile(drive: Drive, filePath: string): Promise<File> {
-        return this.fileService.retrieveFile(drive, filePath);
+        return this.fileService.retrieveFileAsync(drive, filePath);
     }
 
     removeFile(drive: Drive, file: File): Promise<File> {
-        return this.fileService.removeFile(drive, file);
+        return this.fileService.removeFileAsync(drive, file);
     }
 
     writeFile(drive: Drive, file: File): Promise<File> {
-        return this.fileService.writeFile(drive, file);
+        return this.fileService.writeFileAsync(drive, file);
     }
 
     listFiles(drive: Drive, directoryPath: string): Promise<Directory> {
@@ -35,7 +35,7 @@ export class AWSFileSystemOrchestrationService {
         directory: Directory
     ): Promise<Directory> {
         const rootFile = new File(directory.path, '');
-        await this.fileService.removeFile(drive, rootFile);
+        await this.fileService.removeFileAsync(drive, rootFile);
         return new Directory(directory.path);
     }
 }

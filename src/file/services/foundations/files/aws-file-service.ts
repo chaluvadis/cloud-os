@@ -15,8 +15,10 @@ export class AWSFileService implements IAWSFileService {
         this.validations = new AWSFileServiceValidations();
     }
 
-    async retrieveFile(drive: Drive, filePath: string): Promise<File> {
+    async retrieveFileAsync(drive: Drive, filePath: string): Promise<File> {
         return this.operations.retriveFileAsync(async () => {
+            this.validations.validateDrive(drive);
+            this.validations.validateFilePath(filePath);
             const response = await this.fileBroker.getReadableFileContent(
                 drive,
                 filePath
@@ -26,12 +28,12 @@ export class AWSFileService implements IAWSFileService {
         });
     }
 
-    async writeFile(drive: Drive, file: File): Promise<File> {
+    async writeFileAsync(drive: Drive, file: File): Promise<File> {
         await this.fileBroker.putFile(drive, file);
         return new File(file.path, file.content);
     }
 
-    async removeFile(drive: Drive, file: File): Promise<File> {
+    async removeFileAsync(drive: Drive, file: File): Promise<File> {
         await this.fileBroker.deleteFile(drive, file);
         return new File(file.path, file.content);
     }

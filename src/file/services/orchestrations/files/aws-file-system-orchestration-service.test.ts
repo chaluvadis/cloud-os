@@ -34,7 +34,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
             const storedFile = new File(inputFilePath, 'content');
             const expectedFile = storedFile;
             when(
-                mockedFileService.retrieveFile(inputDrive, inputFilePath)
+                mockedFileService.retrieveFileAsync(inputDrive, inputFilePath)
             ).thenResolve(storedFile);
 
             const actualFile = await service.readFile(
@@ -44,7 +44,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
 
             expect(actualFile).toEqual(expectedFile);
             verify(
-                mockedFileService.retrieveFile(inputDrive, inputFilePath)
+                mockedFileService.retrieveFileAsync(inputDrive, inputFilePath)
             ).once();
         });
     });
@@ -56,13 +56,15 @@ describe('AWS File System Orchestration Service Test Suite', () => {
             const storedFile = inputFile;
             const expectedFile = storedFile;
             when(
-                mockedFileService.removeFile(inputDrive, inputFile)
+                mockedFileService.removeFileAsync(inputDrive, inputFile)
             ).thenResolve(storedFile);
 
             const actualFile = await service.removeFile(inputDrive, inputFile);
 
             expect(actualFile).toEqual(expectedFile);
-            verify(mockedFileService.removeFile(inputDrive, inputFile)).once();
+            verify(
+                mockedFileService.removeFileAsync(inputDrive, inputFile)
+            ).once();
         });
     });
 
@@ -73,13 +75,15 @@ describe('AWS File System Orchestration Service Test Suite', () => {
             const storedFile = inputFile;
             const expectedFile = storedFile;
             when(
-                mockedFileService.writeFile(inputDrive, inputFile)
+                mockedFileService.writeFileAsync(inputDrive, inputFile)
             ).thenResolve(storedFile);
 
             const actualFile = await service.writeFile(inputDrive, inputFile);
 
             expect(actualFile).toEqual(expectedFile);
-            verify(mockedFileService.writeFile(inputDrive, inputFile)).once();
+            verify(
+                mockedFileService.writeFileAsync(inputDrive, inputFile)
+            ).once();
         });
     });
 
@@ -150,7 +154,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
             const storedFile = new File('/directory', '');
             const expectedDirectory = inputDirectory;
             when(
-                mockedFileService.removeFile(inputDrive, anyOfClass(File))
+                mockedFileService.removeFileAsync(inputDrive, anyOfClass(File))
             ).thenResolve(storedFile);
 
             const actualDirectory = await service.removeDirectory(
@@ -160,10 +164,10 @@ describe('AWS File System Orchestration Service Test Suite', () => {
 
             expect(actualDirectory).toEqual(expectedDirectory);
             verify(
-                mockedFileService.removeFile(inputDrive, anyOfClass(File))
+                mockedFileService.removeFileAsync(inputDrive, anyOfClass(File))
             ).once();
             const [expectedDrive, expectedRemovedFile] = capture(
-                mockedFileService.removeFile
+                mockedFileService.removeFileAsync
             ).last();
             expect(inputDrive).toEqual(expectedDrive);
             expect(storedFile).toEqual(expectedRemovedFile);

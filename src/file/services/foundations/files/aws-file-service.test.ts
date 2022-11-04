@@ -38,7 +38,7 @@ describe('AWS File Service Test Suite', () => {
                 Body: contentReadable as any,
             });
 
-            const actualFile = await service.retrieveFile(
+            const actualFile = await service.retrieveFileAsync(
                 inputDrive,
                 inputFilePath
             );
@@ -64,7 +64,10 @@ describe('AWS File Service Test Suite', () => {
                 $metadata: {},
             });
 
-            const actualFile = await service.writeFile(inputDrive, inputFile);
+            const actualFile = await service.writeFileAsync(
+                inputDrive,
+                inputFile
+            );
 
             expect(actualFile).toEqual(expectedFile);
             verify(
@@ -87,7 +90,10 @@ describe('AWS File Service Test Suite', () => {
                 $metadata: {},
             });
 
-            const actualFile = await service.removeFile(inputDrive, inputFile);
+            const actualFile = await service.removeFileAsync(
+                inputDrive,
+                inputFile
+            );
 
             expect(actualFile).toEqual(expectedFile);
             verify(

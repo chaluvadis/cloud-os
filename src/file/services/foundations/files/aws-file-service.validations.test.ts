@@ -1,7 +1,10 @@
 import { anyOfClass, instance, mock, reset, verify, when } from 'ts-mockito';
 import { Drive } from '../../../../drive/models/drive';
+import { NullDriveException } from '../../../../drive/models/exceptions/null-drive-exception';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
-import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
+import { NullBodyException } from '../../../models/file/exceptions/null-body-exception';
+import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
+import { NullResponseException } from '../../../models/file/exceptions/null-response-exception';
 import { AWSFileService } from './aws-file-service';
 import { AWSFileValidationException } from './exceptions/aws-file-validation-exception';
 
@@ -14,10 +17,80 @@ describe('AWS File Service Validations Test Suite', () => {
     });
 
     describe('retriveFileAsync', () => {
+        test('Should throw a validation exception when the given drive is null', async () => {
+            const inputDrive = null as any;
+            const inputFilePath = '/file.txt';
+            const nullException = new NullDriveException();
+            const expectedException = new AWSFileValidationException(
+                nullException
+            );
+            const expectedFilePath = inputFilePath;
+
+            const action = () =>
+                service.retrieveFileAsync(inputDrive, inputFilePath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.getReadableFileContent(
+                    anyOfClass(Drive),
+                    expectedFilePath
+                )
+            ).never();
+        });
+
+        test('Should throw a validation exception when the given file path is null', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFilePath = null as any;
+            const nullException = new NullFilePathException();
+            const expectedException = new AWSFileValidationException(
+                nullException
+            );
+            const expectedFilePath = inputFilePath;
+
+            const action = () =>
+                service.retrieveFileAsync(inputDrive, inputFilePath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.getReadableFileContent(
+                    anyOfClass(Drive),
+                    expectedFilePath
+                )
+            ).never();
+        });
+
+        test('Should throw a validation exception when the s3 response is null', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFilePath = '/file.txt';
+            const nullException = new NullResponseException();
+            const expectedException = new AWSFileValidationException(
+                nullException
+            );
+            const expectedFilePath = inputFilePath;
+            const expectedResponse = null as any;
+            when(
+                mockedBroker.getReadableFileContent(
+                    anyOfClass(Drive),
+                    inputFilePath
+                )
+            ).thenResolve(expectedResponse);
+
+            const action = () =>
+                service.retrieveFileAsync(inputDrive, inputFilePath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.getReadableFileContent(
+                    anyOfClass(Drive),
+                    expectedFilePath
+                )
+            ).once();
+        });
+
         test('Should throw a validation exception when the body of the s3 file is null', async () => {
             const inputDrive = new Drive('drive');
             const inputFilePath = '/file.txt';
-            const nullException = new NullFileBodyException();
+            const nullException = new NullBodyException();
             const expectedException = new AWSFileValidationException(
                 nullException
             );
@@ -32,7 +105,7 @@ describe('AWS File Service Validations Test Suite', () => {
             });
 
             const action = () =>
-                service.retrieveFile(inputDrive, inputFilePath);
+                service.retrieveFileAsync(inputDrive, inputFilePath);
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
