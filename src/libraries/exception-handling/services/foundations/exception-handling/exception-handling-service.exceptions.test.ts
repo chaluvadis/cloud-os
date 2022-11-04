@@ -62,7 +62,7 @@ describe('Exception Handling Service Exceptions Test Suite', () => {
             const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
-            when(mockedExceptionActionBroker.getAction(Exception)).thenThrow(
+            when(mockedExceptionActionBroker.getAction(Error)).thenThrow(
                 innerError
             );
 
@@ -112,7 +112,7 @@ describe('Exception Handling Service Exceptions Test Suite', () => {
             const expectedException = new ExceptionHandlingServiceException(
                 failedException
             );
-            when(mockedExceptionActionBroker.getAction(Exception)).thenThrow(
+            when(mockedExceptionActionBroker.getAction(Error)).thenThrow(
                 innerError
             );
 

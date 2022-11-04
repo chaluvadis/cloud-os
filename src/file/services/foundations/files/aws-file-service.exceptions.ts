@@ -6,6 +6,8 @@ import { File } from '../../../models/file/file';
 import { NullResponseException } from '../../../models/file/exceptions/null-response-exception';
 import { NullDriveException } from '../../../../drive/models/exceptions/null-drive-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
+import { S3ServiceException } from '@aws-sdk/client-s3';
+import { AWSFileDependencyException } from './exceptions/aws-file-dependency-exception';
 
 export class AWSFileServiceExceptions {
     retriveFileAsync(logic: Action<Promise<File>>) {
@@ -18,6 +20,10 @@ export class AWSFileServiceExceptions {
                     NullFilePathException,
                 ],
                 (exception) => new AWSFileValidationException(exception)
+            )
+            .handle(
+                [S3ServiceException],
+                (exception) => new AWSFileDependencyException(exception)
             )
             .execute();
     }

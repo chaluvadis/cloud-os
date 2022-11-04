@@ -1,8 +1,8 @@
 import { isNil } from '../../../../conditions';
 import { Exception } from '../../../../exceptions';
-import { ExceptionConstructor } from '../../../../exceptions';
 import { ExceptionActionBroker } from '../../../brokers/exception-actions/exception-action-broker';
 import { AsyncFunction } from '../../../models/exception-handling/async-function';
+import { ErrorConstructor } from '../../../models/exception-handling/error-constructor';
 import { ExceptionAction } from '../../../models/exception-handling/exception-action';
 import { ExceptionHandlingChainActions } from '../../../models/exception-handling/exception-handling-chain-actions';
 import { ExceptionHandlingChainActionsAsync } from '../../../models/exception-handling/exception-handling-chain-actions-async';
@@ -38,7 +38,7 @@ export class ExceptionHandlingService<T>
     }
 
     private handleCatch(
-        exceptionPatternList: ExceptionConstructor[],
+        exceptionPatternList: ErrorConstructor[],
         action: ExceptionAction,
         func: Function<T>
     ): ExceptionHandlingChainActions<T> {
@@ -49,10 +49,10 @@ export class ExceptionHandlingService<T>
     }
 
     private addExceptionPatterns(
-        exceptionPatternList: ExceptionConstructor[],
+        exceptionPatternList: ErrorConstructor[],
         exceptionAction: ExceptionAction
     ) {
-        this.validations.validateExceptionPatterns(exceptionPatternList);
+        this.validations.validateErrorPatterns(exceptionPatternList);
         this.validations.validateExceptionAction(exceptionAction);
         exceptionPatternList.forEach((exceptionConstructor) => {
             this.broker.addAction(exceptionConstructor, exceptionAction);
@@ -63,19 +63,30 @@ export class ExceptionHandlingService<T>
         try {
             return func();
         } catch (error) {
-            throw this.wrapException(Exception.fromError(error));
+            throw this.wrapException(this.createNativeErrorFromAnything(error));
         }
     }
 
-    private wrapException(exception: Exception) {
+    private createNativeErrorFromAnything(error: unknown) {
+        if (error instanceof Error) {
+            return error;
+        } else if (typeof error === 'symbol') {
+            return new Error(error.toString());
+        } else if (typeof error === 'string') {
+            return new Error(error);
+        } else {
+            return new Error(String(error));
+        }
+    }
+
+    private wrapException(error: Error) {
         return this.exceptions.wrapExceptions(() => {
-            const exceptionConstructor =
-                exception.constructor as ExceptionConstructor;
-            const action = this.broker.getAction(exceptionConstructor);
+            const errorConstructor = error.constructor as ErrorConstructor;
+            const action = this.broker.getAction(errorConstructor);
             if (isNil(action)) {
-                return exception;
+                return Exception.fromError(error);
             }
-            return action(exception);
+            return action(Exception.fromError(error));
         });
     }
 
@@ -97,7 +108,7 @@ export class ExceptionHandlingService<T>
     }
 
     private handleCatchAsync(
-        exceptionPatternList: ExceptionConstructor[],
+        exceptionPatternList: ErrorConstructor[],
         action: ExceptionAction,
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
@@ -111,7 +122,7 @@ export class ExceptionHandlingService<T>
         try {
             return await func();
         } catch (error) {
-            throw this.wrapException(Exception.fromError(error));
+            throw this.wrapException(this.createNativeErrorFromAnything(error));
         }
     }
 }

@@ -1,10 +1,8 @@
-import { ExceptionConstructor } from '../../../exceptions';
+import { ErrorConstructor } from '../../models/exception-handling/error-constructor';
 import { ExceptionAction } from '../../models/exception-handling/exception-action';
 
 export interface IExceptionActionBroker {
-    addAction(pattern: ExceptionConstructor, action: ExceptionAction): void;
+    addAction(pattern: ErrorConstructor, action: ExceptionAction): void;
 
-    getAction(
-        pattern: ExceptionConstructor
-    ): ExceptionAction | undefined | null;
+    getAction(pattern: ErrorConstructor): ExceptionAction | undefined | null;
 }

@@ -1,6 +1,6 @@
 import { isNil } from '../../../../conditions';
-import { ExceptionConstructor } from '../../../../exceptions';
 import { AsyncFunction } from '../../../models/exception-handling/async-function';
+import { ErrorConstructor } from '../../../models/exception-handling/error-constructor';
 import { ExceptionAction } from '../../../models/exception-handling/exception-action';
 import { NullExceptionActionException } from '../../../models/exception-handling/exceptions/null-exception-action-exception';
 import { NullExceptionPatternList } from '../../../models/exception-handling/exceptions/null-exception-pattern-list';
@@ -14,8 +14,8 @@ export class ExceptionHandlingServiceValidations<T> {
         }
     }
 
-    validateExceptionPatterns(exceptionPatternList: ExceptionConstructor[]) {
-        if (isNil(exceptionPatternList)) {
+    validateErrorPatterns(errorPatternList: ErrorConstructor[]) {
+        if (isNil(errorPatternList)) {
             throw new NullExceptionPatternList();
         }
     }

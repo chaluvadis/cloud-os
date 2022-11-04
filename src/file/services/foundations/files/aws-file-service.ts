@@ -15,7 +15,7 @@ export class AWSFileService implements IAWSFileService {
         this.validations = new AWSFileServiceValidations();
     }
 
-    async retrieveFileAsync(drive: Drive, filePath: string): Promise<File> {
+    retrieveFileAsync(drive: Drive, filePath: string): Promise<File> {
         return this.operations.retriveFileAsync(async () => {
             this.validations.validateDrive(drive);
             this.validations.validateFilePath(filePath);
