@@ -10,13 +10,11 @@ export class ServiceRuntimeClient implements IServiceRuntimeClient {
         this.runtimeChainService = new ServiceRuntimeChainService();
     }
 
-    createFunctionRuntime<T>(
-        executable: Executable<T>
-    ): ServiceRuntimeChain<T> {
+    createRuntime<T>(executable: Executable<T>): ServiceRuntimeChain<T> {
         return this.runtimeChainService.createServiceRuntimeChain(executable);
     }
 
-    createAsyncFunctionRuntime<T>(
+    createAsyncRuntime<T>(
         executable: Executable<Promise<T>>
     ): ServiceRuntimeChain<Promise<T>> {
         return this.runtimeChainService.createAsyncServiceRuntimeChain(
