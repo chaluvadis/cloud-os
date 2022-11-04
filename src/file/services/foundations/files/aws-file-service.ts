@@ -1,14 +1,17 @@
+import { Readable } from 'stream';
 import { Drive } from '../../../../drive/models/drive';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
-import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';
 import { AWSFileServiceOperations } from './aws-file-service.operations';
+import { AWSFileServiceValidations } from './aws-file-service.validations';
 
 export class AWSFileService {
     private readonly operations: AWSFileServiceOperations;
+    private readonly validations: AWSFileServiceValidations;
 
     constructor(private readonly fileBroker: AWSFileBroker) {
         this.operations = new AWSFileServiceOperations();
+        this.validations = new AWSFileServiceValidations();
     }
 
     async retrieveFile(drive: Drive, filePath: string): Promise<File> {
@@ -17,10 +20,8 @@ export class AWSFileService {
                 drive,
                 filePath
             );
-            if (!response.Body) {
-                throw new NullFileBodyException();
-            }
-            return new File(filePath, await response.Body.transformToString());
+            this.validations.validateRetrieveFileResponse(response);
+            return new File(filePath, response.Body as Readable);
         });
     }
 

@@ -1,2 +1,2 @@
 import 'reflect-metadata';
-import '../libraries/jest-standard-extensions/index';
+import '../src/libraries/jest-standard-extensions/index';

@@ -5,7 +5,7 @@ import { NullFileBodyException } from '../../../models/file/exceptions/null-file
 import { AWSFileService } from './aws-file-service';
 import { AWSFileValidationException } from './exceptions/aws-file-validation-exception';
 
-describe('AWS File Service Exceptions Test Suite', () => {
+describe('AWS File Service Validations Test Suite', () => {
     const mockedBroker = mock(AWSFileBroker);
     const service = new AWSFileService(instance(mockedBroker));
 

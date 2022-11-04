@@ -26,10 +26,8 @@ describe('AWS File Service Test Suite', () => {
             const inputDrive = new Drive('drive');
             const inputFilePath = '/file.txt';
             const contentReadable = new Readable();
-            (contentReadable as any).transformToString = () =>
-                Promise.resolve('content');
             const expectedFilePath = inputFilePath;
-            const expectedFile = new File(expectedFilePath, 'content');
+            const expectedFile = new File(expectedFilePath, contentReadable);
             when(
                 mockedBroker.getReadableFileContent(
                     anyOfClass(Drive),
@@ -58,7 +56,7 @@ describe('AWS File Service Test Suite', () => {
     describe('writeFile', () => {
         test('Should write file to aws', async () => {
             const inputDrive = new Drive('drive');
-            const inputFile = new File('/file.txt', 'content');
+            const inputFile = new File('/file.txt', new Readable());
             const expectedFile = inputFile;
             when(
                 mockedBroker.putFile(anyOfClass(Drive), anyOfClass(File))
@@ -81,8 +79,8 @@ describe('AWS File Service Test Suite', () => {
     describe('removeFile', () => {
         test('Should remove file from aws', async () => {
             const inputDrive = new Drive('drive');
-            const inputFile = new File('./file.txt', 'content');
-            const expectedFile = new File('./file.txt', 'content');
+            const inputFile = new File('./file.txt', new Readable());
+            const expectedFile = new File('./file.txt', new Readable());
             when(
                 mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
             ).thenResolve({

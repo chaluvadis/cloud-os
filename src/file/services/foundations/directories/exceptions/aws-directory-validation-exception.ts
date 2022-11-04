@@ -1,4 +1,4 @@
-import { Exception } from '../../../../../../libraries/exceptions';
+import { Exception } from '../../../../../libraries/exceptions';
 
 export class AWSDirectoryValidationException extends Exception {
     constructor(innerException: Exception) {
