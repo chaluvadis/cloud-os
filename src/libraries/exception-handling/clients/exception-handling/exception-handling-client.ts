@@ -1,7 +1,7 @@
 import { ExceptionActionBroker } from '../../brokers/exception-actions/exception-action-broker';
 import { AsyncFunction } from '../../models/exception-handling/async-function';
 import { ExceptionHandlingChainActions } from '../../models/exception-handling/exception-handling-chain-actions';
-import { ExceptionHandlingChainActionsAsync } from '../../models/exception-handling/exception-handling-chain-actions-async';
+import { AsyncExceptionHandlingChainActions } from '../../models/exception-handling/async-exception-handling-chain-actions';
 import { Function } from '../../models/exception-handling/function';
 import { ExceptionHandlingService } from '../../services/foundations/exception-handling/exception-handling-service';
 import { IExceptionHandlingClient } from './exception-handling-client.interface';
@@ -21,7 +21,7 @@ export class ExceptionHandlingClient<T> implements IExceptionHandlingClient<T> {
 
     tryCatchAsync(
         func: AsyncFunction<T>
-    ): ExceptionHandlingChainActionsAsync<T> {
+    ): AsyncExceptionHandlingChainActions<T> {
         return this.service.tryCatchAsync(func);
     }
 }

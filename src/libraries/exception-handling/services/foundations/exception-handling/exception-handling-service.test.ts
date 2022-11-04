@@ -81,7 +81,67 @@ describe('Exception Handling Service Test Suite', () => {
             ).once();
         });
 
-        test('Should correctly create exception when given multiple patterns to be matched and the function throws', () => {
+        test('Should correctly create an exception when the default handler is called', () => {
+            const innerException = new Exception();
+            const inputFunction = () => {
+                throw innerException;
+            };
+            const higherLevelExceptionFactory = (exception: Exception) =>
+                new HigherLevelException(exception);
+            const expectedException = new HigherLevelException(innerException);
+            when(mockedExceptionActionBroker.getDefault()).thenReturn(
+                higherLevelExceptionFactory
+            );
+
+            const action = () =>
+                service
+                    .tryCatch(inputFunction)
+                    .handle([HigherLevelException], (exception) => exception)
+                    .catchAll(
+                        (exception) => new HigherLevelException(exception)
+                    )
+                    .execute();
+            expect(action).toThrowException(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).once();
+        });
+
+        test('Should correctly create an exception when handle is called with once', () => {
+            const innerException = new Exception();
+            const inputFunction = () => {
+                throw innerException;
+            };
+            const higherLevelExceptionFactory = (exception: Exception) =>
+                new HigherLevelException(exception);
+            const expectedException = new HigherLevelException(innerException);
+            when(mockedExceptionActionBroker.getAction(Exception)).thenReturn(
+                higherLevelExceptionFactory
+            );
+
+            const action = () =>
+                service
+                    .tryCatch(inputFunction)
+                    .handle(
+                        [Exception, HigherLevelException],
+                        higherLevelExceptionFactory
+                    )
+                    .execute();
+            expect(action).toThrowException(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.addAction(Exception, anyFunction())
+            ).once();
+            verify(
+                mockedExceptionActionBroker.addAction(
+                    HigherLevelException,
+                    anyFunction()
+                )
+            ).once();
+        });
+
+        test('Should correctly create exception when handle is called multiple times', () => {
             const thrownException = new Exception();
             const inputFunction = () => {
                 throw thrownException;
@@ -150,16 +210,27 @@ describe('Exception Handling Service Test Suite', () => {
             verify(mockedExceptionActionBroker.getAction(anything())).once();
         });
 
-        test('Should add the pattern to be matched when catching an exception thrown by the function', () => {
+        test('Should correctly create an exception when handle is called with once', async () => {
+            const innerException = new Exception();
             const inputFunction = async () => {
-                throw new Exception();
+                throw innerException;
             };
-
-            const actualChain = service.tryCatchAsync(inputFunction);
-            actualChain.handle(
-                [Exception, HigherLevelException],
-                (exception) => new HigherLevelException(exception)
+            const higherLevelExceptionFactory = (exception: Exception) =>
+                new HigherLevelException(exception);
+            const expectedException = new HigherLevelException(innerException);
+            when(mockedExceptionActionBroker.getAction(Exception)).thenReturn(
+                higherLevelExceptionFactory
             );
+
+            const action = async () =>
+                service
+                    .tryCatchAsync(inputFunction)
+                    .handle(
+                        [Exception, HigherLevelException],
+                        higherLevelExceptionFactory
+                    )
+                    .execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
                 mockedExceptionActionBroker.addAction(Exception, anyFunction())
@@ -172,7 +243,7 @@ describe('Exception Handling Service Test Suite', () => {
             ).once();
         });
 
-        test('Should correctly create exception when given multiple patterns to be matched and the function throws', async () => {
+        test('Should correctly create exception when handle is called multiple times', async () => {
             const thrownException = new Exception();
             const inputFunction = async () => {
                 throw thrownException;
@@ -185,7 +256,7 @@ describe('Exception Handling Service Test Suite', () => {
             );
 
             const actualChain = service.tryCatchAsync(inputFunction);
-            const action = () =>
+            const action = async () =>
                 actualChain
                     .handle([Exception], higherLevelExceptionFactory)
                     .handle(
@@ -205,6 +276,33 @@ describe('Exception Handling Service Test Suite', () => {
                 mockedExceptionActionBroker.addAction(Exception, anyFunction())
             ).once();
             verify(mockedExceptionActionBroker.getAction(Exception)).once();
+        });
+
+        test('Should correctly create an exception when the default handler is called', async () => {
+            const innerException = new Exception();
+            const inputFunction = async () => {
+                throw innerException;
+            };
+            const higherLevelExceptionFactory = (exception: Exception) =>
+                new HigherLevelException(exception);
+            const expectedException = new HigherLevelException(innerException);
+            when(mockedExceptionActionBroker.getDefault()).thenReturn(
+                higherLevelExceptionFactory
+            );
+
+            const action = () =>
+                service
+                    .tryCatchAsync(inputFunction)
+                    .handle([HigherLevelException], (exception) => exception)
+                    .catchAll(
+                        (exception) => new HigherLevelException(exception)
+                    )
+                    .execute();
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedExceptionActionBroker.setDefault(anyFunction())
+            ).once();
         });
     });
 });

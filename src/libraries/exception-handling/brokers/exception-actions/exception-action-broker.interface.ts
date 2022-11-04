@@ -3,6 +3,7 @@ import { ExceptionAction } from '../../models/exception-handling/exception-actio
 
 export interface IExceptionActionBroker {
     addAction(pattern: ErrorConstructor, action: ExceptionAction): void;
-
     getAction(pattern: ErrorConstructor): ExceptionAction | undefined | null;
+    setDefault(action: ExceptionAction): void;
+    getDefault(): ExceptionAction | undefined | null;
 }

@@ -5,7 +5,7 @@ import { AsyncFunction } from '../../../models/exception-handling/async-function
 import { ErrorConstructor } from '../../../models/exception-handling/error-constructor';
 import { ExceptionAction } from '../../../models/exception-handling/exception-action';
 import { ExceptionHandlingChainActions } from '../../../models/exception-handling/exception-handling-chain-actions';
-import { ExceptionHandlingChainActionsAsync } from '../../../models/exception-handling/exception-handling-chain-actions-async';
+import { AsyncExceptionHandlingChainActions } from '../../../models/exception-handling/async-exception-handling-chain-actions';
 import { Function } from '../../../models/exception-handling/function';
 import { ExceptionHandlingServiceExceptions } from './exception-handling-service.exceptions';
 import { IExceptionHandlingService } from './exception-handling-service.interface';
@@ -29,11 +29,14 @@ export class ExceptionHandlingService<T>
         });
     }
 
-    private createExceptionHandlingChainActions(func: Function<T>) {
+    private createExceptionHandlingChainActions(
+        func: Function<T>
+    ): ExceptionHandlingChainActions<T> {
         return new ExceptionHandlingChainActions<T>(
             (exceptionPatterns, action) =>
                 this.handleCatch(exceptionPatterns, action, func),
-            () => this.execute(func)
+            () => this.execute(func),
+            (action) => this.handleDefault(action, func)
         );
     }
 
@@ -83,46 +86,67 @@ export class ExceptionHandlingService<T>
         return this.exceptions.wrapExceptions(() => {
             const errorConstructor = error.constructor as ErrorConstructor;
             const action = this.broker.getAction(errorConstructor);
-            if (isNil(action)) {
-                return Exception.fromError(error);
+            const defaultHandler = this.broker.getDefault();
+            const exception = Exception.fromError(error);
+            if (!isNil(action)) {
+                return action(exception);
             }
-            return action(Exception.fromError(error));
+            if (!isNil(defaultHandler)) {
+                return defaultHandler(exception);
+            }
+            return exception;
         });
+    }
+
+    private handleDefault(action: ExceptionAction, func: Function<T>) {
+        this.broker.setDefault(action);
+        return this.createExceptionHandlingChainActions(func);
     }
 
     tryCatchAsync(
         func: AsyncFunction<T>
-    ): ExceptionHandlingChainActionsAsync<T> {
+    ): AsyncExceptionHandlingChainActions<T> {
         return this.exceptions.tryCatch(() => {
             this.validations.validateFunction(func);
-            return this.createExceptionHandlingChainActionsAsync(func);
+            return this.createAsyncExceptionHandlingChainActions(func);
         });
     }
 
-    private createExceptionHandlingChainActionsAsync(func: AsyncFunction<T>) {
-        return new ExceptionHandlingChainActionsAsync<T>(
+    private createAsyncExceptionHandlingChainActions(
+        func: AsyncFunction<T>
+    ): AsyncExceptionHandlingChainActions<T> {
+        return new AsyncExceptionHandlingChainActions<T>(
             (exceptionPatterns, action) =>
-                this.handleCatchAsync(exceptionPatterns, action, func),
-            () => this.executeAsync(func)
+                this.handleAsyncCatch(exceptionPatterns, action, func),
+            () => this.asyncExecute(func),
+            (action) => this.handleAsyncDefault(action, func)
         );
     }
 
-    private handleCatchAsync(
+    private handleAsyncCatch(
         exceptionPatternList: ErrorConstructor[],
         action: ExceptionAction,
         func: AsyncFunction<T>
     ): ExceptionHandlingChainActions<Promise<T>> {
         return this.exceptions.handleCatch(() => {
             this.addExceptionPatterns(exceptionPatternList, action);
-            return this.createExceptionHandlingChainActionsAsync(func);
+            return this.createAsyncExceptionHandlingChainActions(func);
         });
     }
 
-    private async executeAsync(func: AsyncFunction<T>): Promise<T> {
+    private async asyncExecute(func: AsyncFunction<T>): Promise<T> {
         try {
             return await func();
         } catch (error) {
             throw this.wrapException(this.createNativeErrorFromAnything(error));
         }
+    }
+
+    private handleAsyncDefault(
+        action: ExceptionAction,
+        func: AsyncFunction<T>
+    ) {
+        this.broker.setDefault(action);
+        return this.createAsyncExceptionHandlingChainActions(func);
     }
 }
