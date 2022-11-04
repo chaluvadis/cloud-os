@@ -1,15 +1,18 @@
 import { Drive } from '../../../../drive/models/drive';
-import { tryCatchAsync } from '../../../../../libraries/exception-handling';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
 import { NullFileBodyException } from '../../../models/file/exceptions/null-file-body-exception';
 import { File } from '../../../models/file/file';
-import { AWSFileValidationException } from './exceptions/aws-file-validation-exception';
+import { AWSFileServiceOperations } from './aws-file-service.operations';
 
 export class AWSFileService {
-    constructor(private readonly fileBroker: AWSFileBroker) {}
+    private readonly operations: AWSFileServiceOperations;
+
+    constructor(private readonly fileBroker: AWSFileBroker) {
+        this.operations = new AWSFileServiceOperations();
+    }
 
     async retrieveFile(drive: Drive, filePath: string): Promise<File> {
-        return tryCatchAsync(async () => {
+        return this.operations.retriveFileAsync(async () => {
             const response = await this.fileBroker.getReadableFileContent(
                 drive,
                 filePath
@@ -18,12 +21,7 @@ export class AWSFileService {
                 throw new NullFileBodyException();
             }
             return new File(filePath, await response.Body.transformToString());
-        })
-            .handle(
-                [NullFileBodyException],
-                (exception) => new AWSFileValidationException(exception)
-            )
-            .execute();
+        });
     }
 
     async writeFile(drive: Drive, file: File): Promise<File> {

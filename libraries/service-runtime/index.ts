@@ -3,12 +3,10 @@ import { Executable } from './models/executable/executable';
 
 const client = new ServiceRuntimeClient();
 
-export function createFunctionRuntime<T>(executable: Executable<T>) {
+export function createRuntime<T>(executable: Executable<T>) {
     return client.createRuntime<T>(executable);
 }
 
-export function createAsyncFunctionRuntime<T>(
-    executable: Executable<Promise<T>>
-) {
+export function createAsyncRuntime<T>(executable: Executable<Promise<T>>) {
     return client.createAsyncRuntime<T>(executable);
 }
