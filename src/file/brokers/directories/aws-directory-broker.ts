@@ -6,8 +6,9 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Drive } from '../../../drive/models/drive';
+import { IAWSDirectoryBroker } from './aws-directory-broker.interface';
 
-export class AWSDirectoryBroker {
+export class AWSDirectoryBroker implements IAWSDirectoryBroker {
     constructor(private readonly s3Client: S3Client) {}
 
     listObjectsInDirectory(
