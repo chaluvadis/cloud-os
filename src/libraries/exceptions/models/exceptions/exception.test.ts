@@ -339,11 +339,13 @@ describe('Exception Test Suite', () => {
         });
 
         test('Should be false and have details when an inner exception is not expected', () => {
-            const exceptionA = new Exception('message', new Exception());
+            const innerException = new Exception();
+            innerException.name = 'LowerLevelException';
+            const exceptionA = new Exception('message', innerException);
             const exceptionB = new Exception('message');
             const expectedResult = [
                 false,
-                'Did not expect an inner exception of type [Exception].',
+                'Did not expect an inner exception of type [LowerLevelException].',
             ];
 
             const actualResult = exceptionA.equalsWithDetails(exceptionB);

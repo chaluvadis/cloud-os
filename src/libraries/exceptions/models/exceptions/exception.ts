@@ -98,13 +98,13 @@ export class Exception extends Error {
         }
         if (!isNil(this.innerException) && isNil(other.innerException)) {
             messageBuilder.append(
-                `Did not expect an inner exception of type [${this.name}].`
+                `Did not expect an inner exception of type [${this.innerException.name}].`
             );
             return [false, messageBuilder.toString()];
         }
         if (isNil(this.innerException) && !isNil(other.innerException)) {
             messageBuilder.append(
-                `Expected an inner exception of type [${other.name}].`
+                `Expected an inner exception of type [${other.innerException.name}].`
             );
             return [false, messageBuilder.toString()];
         }

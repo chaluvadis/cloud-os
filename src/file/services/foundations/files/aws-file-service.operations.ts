@@ -15,4 +15,10 @@ export class AWSFileServiceOperations {
             .exceptionHandler(this.exceptions.retrieveFileAsync)
             .run();
     }
+
+    writeFileAsync(logic: Action<Promise<File>>) {
+        return createAsyncRuntime(logic)
+            .exceptionHandler(this.exceptions.writeFileAsync)
+            .run();
+    }
 }

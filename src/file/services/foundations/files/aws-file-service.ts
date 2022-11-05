@@ -28,9 +28,13 @@ export class AWSFileService implements IAWSFileService {
         });
     }
 
-    async writeFileAsync(drive: Drive, file: File): Promise<File> {
-        await this.fileBroker.putFile(drive, file);
-        return new File(file.path, file.content);
+    writeFileAsync(drive: Drive, file: File): Promise<File> {
+        return this.operations.writeFileAsync(async () => {
+            this.validations.validateDrive(drive);
+            this.validations.validateFile(file);
+            await this.fileBroker.putFile(drive, file);
+            return new File(file.path, file.content);
+        });
     }
 
     async removeFileAsync(drive: Drive, file: File): Promise<File> {

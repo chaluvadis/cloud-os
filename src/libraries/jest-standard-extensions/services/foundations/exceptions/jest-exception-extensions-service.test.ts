@@ -39,7 +39,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
                     'Expected exception message to be "A message", was "".',
                     '- Expected map item count to be 1, but found 0.',
                     "- Expected to find key 'key'.",
-                    'Expected an inner exception of type [RandomException].',
+                    'Expected an inner exception of type [Error].',
                 ].join('\n'),
                 false
             );
@@ -162,7 +162,7 @@ describe('Jest Exception Extensions Service Test Suite', () => {
                     'Expected exception message to be "A message", was "".',
                     '- Expected map item count to be 1, but found 0.',
                     "- Expected to find key 'key'.",
-                    'Expected an inner exception of type [RandomException].',
+                    'Expected an inner exception of type [Error].',
                 ].join('\n'),
                 false
             );
