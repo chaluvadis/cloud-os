@@ -153,4 +153,38 @@ describe('AWS File Service Validations Test Suite', () => {
             ).never();
         });
     });
+
+    describe('removeFile', () => {
+        test('Should throw a validation exception when given a null drive', async () => {
+            const inputDrive = null as any;
+            const inputFile = new File('/foo', new Readable());
+            const nullException = new NullDriveException();
+            const expectedException = new AWSFileValidationException(
+                nullException
+            );
+
+            const action = () => service.removeFileAsync(inputDrive, inputFile);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
+            ).never();
+        });
+
+        test('Should throw a validation exception when given a null file', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFile = null as any;
+            const nullException = new NullFileException();
+            const expectedException = new AWSFileValidationException(
+                nullException
+            );
+
+            const action = () => service.removeFileAsync(inputDrive, inputFile);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
+            ).never();
+        });
+    });
 });

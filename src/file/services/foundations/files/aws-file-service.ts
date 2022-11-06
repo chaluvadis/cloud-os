@@ -37,8 +37,12 @@ export class AWSFileService implements IAWSFileService {
         });
     }
 
-    async removeFileAsync(drive: Drive, file: File): Promise<File> {
-        await this.fileBroker.deleteFile(drive, file);
-        return new File(file.path, file.content);
+    removeFileAsync(drive: Drive, file: File): Promise<File> {
+        return this.operations.removeFileAsync(async () => {
+            this.validations.validateDrive(drive);
+            this.validations.validateFile(file);
+            await this.fileBroker.deleteFile(drive, file);
+            return new File(file.path, file.content);
+        });
     }
 }

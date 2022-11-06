@@ -12,6 +12,7 @@ import { FailedFileRetrievalException } from './exceptions/failed-file-retrieval
 import { AWSFileServiceException } from './exceptions/aws-file-service-exception';
 import { NullFileException } from '../../../models/file/exceptions/null-file-exception';
 import { FailedFileWriteException } from './exceptions/failed-file-write-exception';
+import { FailedFileRemovalException } from './exceptions/failed-file-removal-exception';
 
 export class AWSFileServiceExceptions {
     retrieveFileAsync(logic: Action<Promise<File>>) {
@@ -51,6 +52,25 @@ export class AWSFileServiceExceptions {
             .catchAll((exception) => {
                 const failedFileWrite = new FailedFileWriteException(exception);
                 return new AWSFileServiceException(failedFileWrite);
+            })
+            .execute();
+    }
+
+    removeFileAsync(logic: Action<Promise<File>>) {
+        return tryCatchAsync(logic)
+            .handle(
+                [NullDriveException, NullFileException],
+                (exception) => new AWSFileValidationException(exception)
+            )
+            .handle(
+                [S3ServiceException],
+                (exception) => new AWSFileDependencyException(exception)
+            )
+            .catchAll((exception) => {
+                const failedFileRemoval = new FailedFileRemovalException(
+                    exception
+                );
+                return new AWSFileServiceException(failedFileRemoval);
             })
             .execute();
     }
