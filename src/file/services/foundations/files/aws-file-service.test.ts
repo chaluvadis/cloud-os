@@ -82,8 +82,8 @@ describe('AWS File Service Test Suite', () => {
     describe('removeFile', () => {
         test('Should remove file from aws', async () => {
             const inputDrive = new Drive('drive');
-            const inputFile = new File('./file.txt', new Readable());
-            const expectedFile = new File('./file.txt', new Readable());
+            const inputFile = new File('/file.txt', new Readable());
+            const expectedFile = new File('/file.txt', new Readable());
             when(
                 mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
             ).thenResolve({

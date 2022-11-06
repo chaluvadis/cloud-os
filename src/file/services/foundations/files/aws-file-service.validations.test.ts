@@ -3,6 +3,8 @@ import { anyOfClass, instance, mock, reset, verify, when } from 'ts-mockito';
 import { Drive } from '../../../../drive/models/drive';
 import { NullDriveException } from '../../../../drive/models/exceptions/null-drive-exception';
 import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
+import { IllegalFileException } from '../../../models/file/exceptions/illegal-file-exception';
+import { IllegalFilePathException } from '../../../models/file/exceptions/illegal-file-path-exception';
 import { NullBodyException } from '../../../models/file/exceptions/null-body-exception';
 import { NullFileException } from '../../../models/file/exceptions/null-file-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
@@ -47,6 +49,36 @@ describe('AWS File Service Validations Test Suite', () => {
             const nullException = new NullFilePathException();
             const expectedException = new AWSFileValidationException(
                 nullException
+            );
+            const expectedFilePath = inputFilePath;
+
+            const action = () =>
+                service.retrieveFileAsync(inputDrive, inputFilePath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.getReadableFileContent(
+                    anyOfClass(Drive),
+                    expectedFilePath
+                )
+            ).never();
+        });
+
+        test('Should throw a validation exception when the given file path is relative', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFilePath = './foo.txt';
+            const illegalException = new IllegalFilePathException(
+                new Map([
+                    [
+                        'path',
+                        [
+                            `File paths must be absolute. Provided path was "./foo.txt" and is relative.`,
+                        ],
+                    ],
+                ])
+            );
+            const expectedException = new AWSFileValidationException(
+                illegalException
             );
             const expectedFilePath = inputFilePath;
 
@@ -152,6 +184,31 @@ describe('AWS File Service Validations Test Suite', () => {
                 mockedBroker.putFile(anyOfClass(Drive), anyOfClass(File))
             ).never();
         });
+
+        test('Should throw a validation exception when given a relative file path', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFile = new File('./foo', new Readable());
+            const illegalException = new IllegalFileException(
+                new Map([
+                    [
+                        'path',
+                        [
+                            `File paths must be absolute. Provided path was "./foo" and is relative.`,
+                        ],
+                    ],
+                ])
+            );
+            const expectedException = new AWSFileValidationException(
+                illegalException
+            );
+
+            const action = () => service.writeFileAsync(inputDrive, inputFile);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.putFile(anyOfClass(Drive), anyOfClass(File))
+            ).never();
+        });
     });
 
     describe('removeFile', () => {
@@ -177,6 +234,31 @@ describe('AWS File Service Validations Test Suite', () => {
             const nullException = new NullFileException();
             const expectedException = new AWSFileValidationException(
                 nullException
+            );
+
+            const action = () => service.removeFileAsync(inputDrive, inputFile);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.deleteFile(anyOfClass(Drive), anyOfClass(File))
+            ).never();
+        });
+
+        test('Should throw a validation exception when given a relative file path', async () => {
+            const inputDrive = new Drive('drive');
+            const inputFile = new File('./foo', new Readable());
+            const illegalException = new IllegalFileException(
+                new Map([
+                    [
+                        'path',
+                        [
+                            `File paths must be absolute. Provided path was "./foo" and is relative.`,
+                        ],
+                    ],
+                ])
+            );
+            const expectedException = new AWSFileValidationException(
+                illegalException
             );
 
             const action = () => service.removeFileAsync(inputDrive, inputFile);
