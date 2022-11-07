@@ -16,6 +16,8 @@ export class AWSDirectoryService {
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
         return this.operations.retrieveDirectory(async () => {
+            this.validations.validateDrive(drive);
+            this.validations.validateFilePath(directoryPath);
             const response = await this.directoryBroker.listObjectsInDirectory(
                 drive,
                 directoryPath
