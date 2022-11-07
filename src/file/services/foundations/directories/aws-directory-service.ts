@@ -5,18 +5,21 @@ import { AWSDirectoryBroker } from '../../../brokers/directories/aws-directory-b
 import { Directory } from '../../../models/directory/directory';
 import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
+import { AWSDirectoryServiceOperations } from './aws-directory-service.operations';
 import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 export class AWSDirectoryService {
     private readonly validations: AWSDirectoryServiceValidations;
+    private readonly operations: AWSDirectoryServiceOperations;
 
     constructor(private readonly directoryBroker: AWSDirectoryBroker) {
         this.validations = new AWSDirectoryServiceValidations();
+        this.operations = new AWSDirectoryServiceOperations();
     }
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
-        return tryCatchAsync(async () => {
+        return this.operations.retrieveDirectory(async () => {
             const response = await this.directoryBroker.listObjectsInDirectory(
                 drive,
                 directoryPath
@@ -26,27 +29,22 @@ export class AWSDirectoryService {
                 directoryPath,
                 response.Contents as AWSObject[]
             );
-        })
-            .handle(
-                [NullDirectoryContentsException, NullFilePathException],
-                (exception) => new AWSDirectoryValidationException(exception)
-            )
-            .execute();
+        });
     }
 
     private mapAWSObjectsToDirectory(
         rootPath: string,
-        awsObjectList: AWSObject[]
+        awsFileList: AWSObject[]
     ): Directory {
         const expandedRootPath = rootPath.split('/');
-        const expandedKeys = awsObjectList.map((awsObject) => {
+        const expandedFileKeys = awsFileList.map((awsObject) => {
             this.validations.validateAWSObject(awsObject);
             return awsObject.Key!.split('/');
         });
         return new Directory(
             rootPath,
-            this.parseFileNames(expandedRootPath, expandedKeys),
-            this.parseSubdirectoryNames(expandedRootPath, expandedKeys)
+            this.parseFileNames(expandedRootPath, expandedFileKeys),
+            this.parseSubdirectoryNames(expandedRootPath, expandedFileKeys)
         );
     }
 
