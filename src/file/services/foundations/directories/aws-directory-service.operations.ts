@@ -15,4 +15,10 @@ export class AWSDirectoryServiceOperations {
             .exceptionHandler(this.exceptions.retrieveDirectory)
             .run();
     }
+
+    makeDirectory(logic: Action<Promise<Directory>>) {
+        return createAsyncRuntime(logic)
+            .exceptionHandler(this.exceptions.makeDirectory)
+            .run();
+    }
 }

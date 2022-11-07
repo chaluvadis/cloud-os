@@ -14,4 +14,8 @@ export class AWSDirectoryServiceExceptions {
             )
             .execute();
     }
+
+    makeDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
+        return tryCatchAsync(logic).execute();
+    }
 }

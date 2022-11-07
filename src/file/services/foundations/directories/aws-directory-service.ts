@@ -1,13 +1,9 @@
 import { _Object as AWSObject } from '@aws-sdk/client-s3';
 import { Drive } from '../../../../drive/models/drive';
-import { tryCatchAsync } from '../../../../libraries/exception-handling';
 import { AWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
 import { Directory } from '../../../models/directory/directory';
-import { NullDirectoryContentsException } from '../../../models/directory/exceptions/null-directory-contents-exception';
-import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { AWSDirectoryServiceOperations } from './aws-directory-service.operations';
 import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
-import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 
 export class AWSDirectoryService {
     private readonly validations: AWSDirectoryServiceValidations;
@@ -108,11 +104,10 @@ export class AWSDirectoryService {
             .join('');
     }
 
-    async makeDirectory(
-        drive: Drive,
-        directoryPath: string
-    ): Promise<Directory> {
-        await this.directoryBroker.putDirectory(drive, directoryPath);
-        return new Directory(directoryPath);
+    makeDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
+        return this.operations.makeDirectory(async () => {
+            await this.directoryBroker.putDirectory(drive, directoryPath);
+            return new Directory(directoryPath);
+        });
     }
 }
