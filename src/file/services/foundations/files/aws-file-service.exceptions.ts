@@ -8,13 +8,10 @@ import { NullDriveException } from '../../../../drive/models/exceptions/null-dri
 import { NullFilePathException } from '../../../models/file/exceptions/null-file-path-exception';
 import { S3ServiceException } from '@aws-sdk/client-s3';
 import { AWSFileDependencyException } from './exceptions/aws-file-dependency-exception';
-import { FailedFileRetrievalException } from './exceptions/failed-file-retrieval-exception';
-import { AWSFileServiceException } from './exceptions/aws-file-service-exception';
 import { NullFileException } from '../../../models/file/exceptions/null-file-exception';
-import { FailedFileWriteException } from './exceptions/failed-file-write-exception';
-import { FailedFileRemovalException } from './exceptions/failed-file-removal-exception';
 import { IllegalFileException } from '../../../models/file/exceptions/illegal-file-exception';
 import { IllegalFilePathException } from '../../../models/file/exceptions/illegal-file-path-exception';
+import { FailedAWSFileApiException } from './exceptions/failed-aws-file-api-exception';
 
 export class AWSFileServiceExceptions {
     retrieveFileAsync(logic: Action<Promise<File>>) {
@@ -29,15 +26,11 @@ export class AWSFileServiceExceptions {
                 ],
                 (exception) => new AWSFileValidationException(exception)
             )
-            .handle(
-                [S3ServiceException],
-                (exception) => new AWSFileDependencyException(exception)
-            )
-            .catchAll((exception) => {
-                const failedFileRetrieval = new FailedFileRetrievalException(
+            .handle([S3ServiceException], (exception) => {
+                const failedFileWrite = new FailedAWSFileApiException(
                     exception
                 );
-                return new AWSFileServiceException(failedFileRetrieval);
+                return new AWSFileDependencyException(failedFileWrite);
             })
             .execute();
     }
@@ -48,13 +41,11 @@ export class AWSFileServiceExceptions {
                 [NullDriveException, NullFileException, IllegalFileException],
                 (exception) => new AWSFileValidationException(exception)
             )
-            .handle(
-                [S3ServiceException],
-                (exception) => new AWSFileDependencyException(exception)
-            )
-            .catchAll((exception) => {
-                const failedFileWrite = new FailedFileWriteException(exception);
-                return new AWSFileServiceException(failedFileWrite);
+            .handle([S3ServiceException], (exception) => {
+                const failedFileWrite = new FailedAWSFileApiException(
+                    exception
+                );
+                return new AWSFileDependencyException(failedFileWrite);
             })
             .execute();
     }
@@ -65,15 +56,11 @@ export class AWSFileServiceExceptions {
                 [NullDriveException, NullFileException, IllegalFileException],
                 (exception) => new AWSFileValidationException(exception)
             )
-            .handle(
-                [S3ServiceException],
-                (exception) => new AWSFileDependencyException(exception)
-            )
-            .catchAll((exception) => {
-                const failedFileRemoval = new FailedFileRemovalException(
+            .handle([S3ServiceException], (exception) => {
+                const failedFileRemoval = new FailedAWSFileApiException(
                     exception
                 );
-                return new AWSFileServiceException(failedFileRemoval);
+                return new AWSFileDependencyException(failedFileRemoval);
             })
             .execute();
     }
