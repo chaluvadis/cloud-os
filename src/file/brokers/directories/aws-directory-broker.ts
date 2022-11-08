@@ -9,9 +9,6 @@ import { Drive } from '../../../drive/models/drive';
 import { IAWSDirectoryBroker } from './aws-directory-broker.interface';
 
 export class AWSDirectoryBroker implements IAWSDirectoryBroker {
-    getFile(arg0: any, expectedFilePath: string): any {
-        throw new Error('Method not implemented.');
-    }
     constructor(private readonly s3Client: S3Client) {}
 
     listObjectsInDirectory(
