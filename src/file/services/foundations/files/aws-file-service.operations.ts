@@ -5,11 +5,9 @@ import { AWSFileServiceExceptionHandlers } from './aws-file-service.exceptions';
 import { AWSFileServiceValidations } from './aws-file-service.validations';
 import { BundleOperations } from '../../../../core/bundlers/bundle-operations';
 
-const AWSFileServiceBundledOperations = BundleOperations<
+export class AWSFileServiceOperations extends BundleOperations<
     [AWSFileServiceExceptionHandlers, AWSFileServiceValidations]
->(AWSFileServiceExceptionHandlers, AWSFileServiceValidations);
-
-export class AWSFileServiceOperations extends AWSFileServiceBundledOperations {
+>(AWSFileServiceExceptionHandlers, AWSFileServiceValidations) {
     createRetrieveFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
             .exceptionHandler(this.retrieveFileExceptionHandlerAsync)
