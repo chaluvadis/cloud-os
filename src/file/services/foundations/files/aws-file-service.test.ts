@@ -29,10 +29,7 @@ describe('AWS File Service Test Suite', () => {
             const expectedFilePath = inputFilePath;
             const expectedFile = new File(expectedFilePath, contentReadable);
             when(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).thenResolve({
                 $metadata: {},
                 Body: contentReadable as any,
@@ -45,10 +42,7 @@ describe('AWS File Service Test Suite', () => {
 
             expect(actualFile).toEqual(expectedFile);
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).once();
         });
     });

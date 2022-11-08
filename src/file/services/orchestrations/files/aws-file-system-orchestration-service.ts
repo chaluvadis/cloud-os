@@ -34,8 +34,6 @@ export class AWSFileSystemOrchestrationService {
         drive: Drive,
         directory: Directory
     ): Promise<Directory> {
-        const rootFile = new File(directory.path, '');
-        await this.fileService.removeFileAsync(drive, rootFile);
-        return new Directory(directory.path);
+        throw new Error('method not implemented');
     }
 }

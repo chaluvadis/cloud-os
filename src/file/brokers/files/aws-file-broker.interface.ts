@@ -8,10 +8,7 @@ import { File } from '../../models/file/file';
 import { IFileBroker } from './file-broker.interface';
 
 export interface IAWSFileBroker extends IFileBroker {
-    getReadableFileContent(
-        drive: Drive,
-        filePath: string
-    ): Promise<GetObjectCommandOutput>;
+    getFile(drive: Drive, filePath: string): Promise<GetObjectCommandOutput>;
 
     deleteFile(drive: Drive, file: File): Promise<DeleteObjectCommandOutput>;
 

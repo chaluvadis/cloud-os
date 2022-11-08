@@ -35,10 +35,7 @@ describe('AWS File Service Operations Test Suite', () => {
             );
             const expectedFilePath = inputFilePath;
             when(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).thenReject(sdkException);
 
             const action = () =>
@@ -46,10 +43,7 @@ describe('AWS File Service Operations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).once();
         });
 
@@ -62,10 +56,7 @@ describe('AWS File Service Operations Test Suite', () => {
             );
             const expectedFilePath = inputFilePath;
             when(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).thenReject(randomException);
 
             const action = () =>
@@ -73,10 +64,7 @@ describe('AWS File Service Operations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).once();
         });
     });

@@ -36,10 +36,7 @@ describe('AWS File Service Validations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).never();
         });
 
@@ -57,10 +54,7 @@ describe('AWS File Service Validations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).never();
         });
 
@@ -87,10 +81,7 @@ describe('AWS File Service Validations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).never();
         });
 
@@ -104,10 +95,7 @@ describe('AWS File Service Validations Test Suite', () => {
             const expectedFilePath = inputFilePath;
             const expectedResponse = null as any;
             when(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    inputFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), inputFilePath)
             ).thenResolve(expectedResponse);
 
             const action = () =>
@@ -115,10 +103,7 @@ describe('AWS File Service Validations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).once();
         });
 
@@ -131,10 +116,7 @@ describe('AWS File Service Validations Test Suite', () => {
             );
             const expectedFilePath = inputFilePath;
             when(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    inputFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), inputFilePath)
             ).thenResolve({
                 $metadata: {},
             });
@@ -144,10 +126,7 @@ describe('AWS File Service Validations Test Suite', () => {
             await expect(action).toThrowExceptionAsync(expectedException);
 
             verify(
-                mockedBroker.getReadableFileContent(
-                    anyOfClass(Drive),
-                    expectedFilePath
-                )
+                mockedBroker.getFile(anyOfClass(Drive), expectedFilePath)
             ).once();
         });
     });

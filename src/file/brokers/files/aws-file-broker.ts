@@ -14,10 +14,7 @@ import { IAWSFileBroker } from './aws-file-broker.interface';
 export class AWSFileBroker implements IAWSFileBroker {
     constructor(private readonly s3Client: S3Client) {}
 
-    getReadableFileContent(
-        drive: Drive,
-        filePath: string
-    ): Promise<GetObjectCommandOutput> {
+    getFile(drive: Drive, filePath: string): Promise<GetObjectCommandOutput> {
         return this.s3Client.send(
             new GetObjectCommand({
                 Bucket: drive.name,

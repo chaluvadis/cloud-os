@@ -19,10 +19,7 @@ export class AWSFileService implements IAWSFileService {
         return this.operations.retriveFileAsync(async () => {
             this.validations.validateDrive(drive);
             this.validations.validateFilePath(filePath);
-            const response = await this.fileBroker.getReadableFileContent(
-                drive,
-                filePath
-            );
+            const response = await this.fileBroker.getFile(drive, filePath);
             this.validations.validateRetrieveFileResponse(response);
             return new File(filePath, response.Body as Readable);
         });
