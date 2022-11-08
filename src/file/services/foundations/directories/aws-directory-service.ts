@@ -1,6 +1,6 @@
 import { _Object as AWSObject } from '@aws-sdk/client-s3';
 import { Drive } from '../../../../drive/models/drive';
-import { AWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker';
+import { IAWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker.interface';
 import { Directory } from '../../../models/directory/directory';
 import { AWSDirectoryServiceOperations } from './aws-directory-service.operations';
 import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
@@ -9,7 +9,7 @@ export class AWSDirectoryService {
     private readonly validations: AWSDirectoryServiceValidations;
     private readonly operations: AWSDirectoryServiceOperations;
 
-    constructor(private readonly directoryBroker: AWSDirectoryBroker) {
+    constructor(private readonly directoryBroker: IAWSDirectoryBroker) {
         this.validations = new AWSDirectoryServiceValidations();
         this.operations = new AWSDirectoryServiceOperations();
     }

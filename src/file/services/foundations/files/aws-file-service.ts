@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 import { Drive } from '../../../../drive/models/drive';
-import { AWSFileBroker } from '../../../brokers/files/aws-file-broker';
+import { IAWSFileBroker } from '../../../brokers/files/aws-file-broker.interface';
 import { File } from '../../../models/file/file';
 import { IAWSFileService } from './aws-file-service.interface';
 import { AWSFileServiceOperations } from './aws-file-service.operations';
@@ -10,7 +10,7 @@ export class AWSFileService implements IAWSFileService {
     private readonly operations: AWSFileServiceOperations;
     private readonly validations: AWSFileServiceValidations;
 
-    constructor(private readonly fileBroker: AWSFileBroker) {
+    constructor(private readonly fileBroker: IAWSFileBroker) {
         this.operations = new AWSFileServiceOperations();
         this.validations = new AWSFileServiceValidations();
     }
