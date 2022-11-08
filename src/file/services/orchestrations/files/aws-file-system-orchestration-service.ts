@@ -3,8 +3,11 @@ import { Directory } from '../../../models/directory/directory';
 import { File } from '../../../models/file/file';
 import { AWSDirectoryService } from '../../foundations/directories/aws-directory-service';
 import { AWSFileService } from '../../foundations/files/aws-file-service';
+import { IAWSFileSystemOrchestrationService } from './aws-file-system-orchestration-service.interface';
 
-export class AWSFileSystemOrchestrationService {
+export class AWSFileSystemOrchestrationService
+    implements IAWSFileSystemOrchestrationService
+{
     constructor(
         private readonly fileService: AWSFileService,
         private readonly directoryService: AWSDirectoryService
