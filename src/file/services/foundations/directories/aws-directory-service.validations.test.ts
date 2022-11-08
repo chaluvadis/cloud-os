@@ -148,4 +148,78 @@ describe('AWS Directory Service Validations Test Suite', () => {
             ).once();
         });
     });
+
+    describe('makeDirectory', () => {
+        test('Should throw a validation exception when the drive is null', async () => {
+            const nullException = new NullDriveException();
+            const expectedException = new AWSDirectoryValidationException(
+                nullException
+            );
+            const inputDrive = null as any;
+            const inputDirectoryPath = '/directory';
+            const expectedDirectoryPath = inputDirectoryPath;
+
+            const action = () =>
+                service.makeDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.putDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).never();
+        });
+
+        test('Should throw a validation exception when the file path is null', async () => {
+            const nullException = new NullFilePathException();
+            const expectedException = new AWSDirectoryValidationException(
+                nullException
+            );
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = null as any;
+            const expectedDirectoryPath = inputDirectoryPath;
+
+            const action = () =>
+                service.makeDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.putDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).never();
+        });
+
+        test('Should throw a validation exception when the file path is relative', async () => {
+            const nullException = new IllegalFilePathException(
+                new Map([
+                    [
+                        'path',
+                        [
+                            'File path must be absolute. Received relative file path "./path"',
+                        ],
+                    ],
+                ])
+            );
+            const expectedException = new AWSDirectoryValidationException(
+                nullException
+            );
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = './path';
+            const expectedDirectoryPath = inputDirectoryPath;
+
+            const action = () =>
+                service.makeDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.putDirectory(
+                    anyOfClass(Drive),
+                    expectedDirectoryPath
+                )
+            ).never();
+        });
+    });
 });

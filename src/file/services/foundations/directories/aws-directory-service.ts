@@ -108,6 +108,8 @@ export class AWSDirectoryService {
 
     makeDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
         return this.operations.makeDirectory(async () => {
+            this.validations.validateDrive(drive);
+            this.validations.validateFilePath(directoryPath);
             await this.directoryBroker.putDirectory(drive, directoryPath);
             return new Directory(directoryPath);
         });

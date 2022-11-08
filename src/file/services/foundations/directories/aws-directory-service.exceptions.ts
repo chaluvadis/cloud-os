@@ -33,6 +33,14 @@ export class AWSDirectoryServiceExceptions {
 
     makeDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
         return tryCatchAsync(logic)
+            .handle(
+                [
+                    NullFilePathException,
+                    NullDriveException,
+                    IllegalFilePathException,
+                ],
+                (exception) => new AWSDirectoryValidationException(exception)
+            )
             .handle([S3ServiceException], (exception) => {
                 const failedException = new FailedAWSDirectoryApiException(
                     exception
