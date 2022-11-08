@@ -1,7 +1,7 @@
+import { BundledConstructor } from '../types/bundled-constructor';
 import { Constructor } from '../types/constructor';
-import { GenericConstructor } from '../types/generic-constructor';
 
-export function combinePartials<T>(constructors: Constructor[]) {
+export function combinePartials<T extends any[]>(constructors: Constructor[]) {
     class Dummy {}
 
     constructors.forEach((baseCtor) => {
@@ -15,5 +15,5 @@ export function combinePartials<T>(constructors: Constructor[]) {
         });
     });
 
-    return Dummy as GenericConstructor<T>;
+    return Dummy as BundledConstructor<T>;
 }

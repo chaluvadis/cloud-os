@@ -5,9 +5,10 @@ import { Directory } from '../../../models/directory/directory';
 import { AWSDirectoryServiceExceptions } from './aws-directory-service.exceptions';
 import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
 
-export class AWSDirectoryServiceOperations extends BundleOperations<
-    [AWSDirectoryServiceExceptions, AWSDirectoryServiceValidations]
->(AWSDirectoryServiceExceptions, AWSDirectoryServiceValidations) {
+export class AWSDirectoryServiceOperations extends BundleOperations(
+    AWSDirectoryServiceExceptions,
+    AWSDirectoryServiceValidations
+) {
     createRetrieveDirectoryAsyncRuntime(
         logic: Action<Promise<Directory>>
     ): Promise<Directory> {

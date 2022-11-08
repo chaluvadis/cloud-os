@@ -1,7 +1,7 @@
 import { combinePartials } from '../partials/combine-partials';
-import { BundledConstructor } from '../types/bundled-constructor';
 import { Constructor } from '../types/constructor';
+import { ConstructorsToInstances } from '../types/constructors-to-instances';
 
-export function BundleOperations<T extends any[]>(...partials: Constructor[]) {
-    return combinePartials(partials) as BundledConstructor<T>;
+export function BundleOperations<T extends Constructor[]>(...partials: T) {
+    return combinePartials<ConstructorsToInstances<T>>(partials);
 }

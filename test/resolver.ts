@@ -1,9 +1,9 @@
-module.exports = (path, options) => {
+module.exports = (path: any, options: any) => {
     // Call the defaultResolver, so we leverage its cache, error handling, etc.
     return options.defaultResolver(path, {
         ...options,
         // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
-        packageFilter: (pkg) => {
+        packageFilter: (pkg: any) => {
             // This is a workaround for https://github.com/uuidjs/uuid/pull/616
             //
             // jest-environment-jsdom 28+ tries to use browser exports instead of default exports,
