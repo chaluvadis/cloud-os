@@ -4,40 +4,38 @@ import { IAWSFileBroker } from '../../../brokers/files/aws-file-broker.interface
 import { File } from '../../../models/file/file';
 import { IAWSFileService } from './aws-file-service.interface';
 import { AWSFileServiceOperations } from './aws-file-service.operations';
-import { AWSFileServiceValidations } from './aws-file-service.validations';
 
-export class AWSFileService implements IAWSFileService {
-    private readonly operations: AWSFileServiceOperations;
-    private readonly validations: AWSFileServiceValidations;
-
+export class AWSFileService
+    extends AWSFileServiceOperations
+    implements IAWSFileService
+{
     constructor(private readonly fileBroker: IAWSFileBroker) {
-        this.operations = new AWSFileServiceOperations();
-        this.validations = new AWSFileServiceValidations();
+        super();
     }
 
     retrieveFileAsync(drive: Drive, filePath: string): Promise<File> {
-        return this.operations.retriveFileAsync(async () => {
-            this.validations.validateDrive(drive);
-            this.validations.validateFilePath(filePath);
+        return this.createRetrieveFileAsyncRuntime(async () => {
+            this.validateDrive(drive);
+            this.validateFilePath(filePath);
             const response = await this.fileBroker.getFile(drive, filePath);
-            this.validations.validateRetrieveFileResponse(response);
+            this.validateRetrieveFileResponse(response);
             return new File(filePath, response.Body as Readable);
         });
     }
 
     writeFileAsync(drive: Drive, file: File): Promise<File> {
-        return this.operations.writeFileAsync(async () => {
-            this.validations.validateDrive(drive);
-            this.validations.validateFile(file);
+        return this.createWriteFileAsyncRuntime(async () => {
+            this.validateDrive(drive);
+            this.validateFile(file);
             await this.fileBroker.putFile(drive, file);
             return new File(file.path, file.content);
         });
     }
 
     removeFileAsync(drive: Drive, file: File): Promise<File> {
-        return this.operations.removeFileAsync(async () => {
-            this.validations.validateDrive(drive);
-            this.validations.validateFile(file);
+        return this.createRemoveFileAsyncRuntime(async () => {
+            this.validateDrive(drive);
+            this.validateFile(file);
             await this.fileBroker.deleteFile(drive, file);
             return new File(file.path, file.content);
         });

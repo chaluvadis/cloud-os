@@ -1,30 +1,30 @@
 import { createAsyncRuntime } from '../../../../libraries/service-runtime';
 import { File } from '../../../models/file/file';
 import { Action } from '../../../../core/types/action';
-import { AWSFileServiceExceptions } from './aws-file-service.exceptions';
+import { AWSFileServiceExceptionHandlers } from './aws-file-service.exceptions';
+import { AWSFileServiceValidations } from './aws-file-service.validations';
+import { BundleOperations } from '../../../../core/bundlers/bundle-operations';
 
-export class AWSFileServiceOperations {
-    private readonly exceptions: AWSFileServiceExceptions;
+const AWSFileServiceBundledOperations = BundleOperations<
+    [AWSFileServiceExceptionHandlers, AWSFileServiceValidations]
+>(AWSFileServiceExceptionHandlers, AWSFileServiceValidations);
 
-    constructor() {
-        this.exceptions = new AWSFileServiceExceptions();
-    }
-
-    retriveFileAsync(logic: Action<Promise<File>>) {
+export class AWSFileServiceOperations extends AWSFileServiceBundledOperations {
+    createRetrieveFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.retrieveFileAsync)
+            .exceptionHandler(this.retrieveFileExceptionHandlerAsync)
             .run();
     }
 
-    writeFileAsync(logic: Action<Promise<File>>) {
+    createWriteFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.writeFileAsync)
+            .exceptionHandler(this.writeFileExceptionHandlerAsync)
             .run();
     }
 
-    removeFileAsync(logic: Action<Promise<File>>) {
+    createRemoveFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.removeFileAsync)
+            .exceptionHandler(this.removeFileExceptionHandlerAsync)
             .run();
     }
 }

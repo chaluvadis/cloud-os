@@ -12,9 +12,10 @@ import { NullFileException } from '../../../models/file/exceptions/null-file-exc
 import { IllegalFileException } from '../../../models/file/exceptions/illegal-file-exception';
 import { IllegalFilePathException } from '../../../models/file/exceptions/illegal-file-path-exception';
 import { FailedAWSFileApiException } from './exceptions/failed-aws-file-api-exception';
+import { AWSFileServiceValidations } from './aws-file-service.validations';
 
-export class AWSFileServiceExceptions {
-    retrieveFileAsync(logic: Action<Promise<File>>) {
+export class AWSFileServiceExceptionHandlers extends AWSFileServiceValidations {
+    retrieveFileExceptionHandlerAsync(logic: Action<Promise<File>>) {
         return tryCatchAsync(logic)
             .handle(
                 [
@@ -35,7 +36,7 @@ export class AWSFileServiceExceptions {
             .execute();
     }
 
-    writeFileAsync(logic: Action<Promise<File>>) {
+    writeFileExceptionHandlerAsync(logic: Action<Promise<File>>) {
         return tryCatchAsync(logic)
             .handle(
                 [NullDriveException, NullFileException, IllegalFileException],
@@ -50,7 +51,7 @@ export class AWSFileServiceExceptions {
             .execute();
     }
 
-    removeFileAsync(logic: Action<Promise<File>>) {
+    removeFileExceptionHandlerAsync(logic: Action<Promise<File>>) {
         return tryCatchAsync(logic)
             .handle(
                 [NullDriveException, NullFileException, IllegalFileException],
