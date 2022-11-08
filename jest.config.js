@@ -8,4 +8,6 @@ module.exports = {
     },
     resolver: `${__dirname}/test/resolver.ts`,
     setupFilesAfterEnv: [`${__dirname}/test/jest-setup.ts`],
+    coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
+    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 };
