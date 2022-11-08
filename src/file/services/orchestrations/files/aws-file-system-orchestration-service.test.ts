@@ -1,3 +1,4 @@
+import { Readable } from 'stream';
 import {
     anyOfClass,
     capture,
@@ -31,7 +32,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
         test('Should read a file from the file system', async () => {
             const inputDrive = new Drive('drive');
             const inputFilePath = '/file.txt';
-            const storedFile = new File(inputFilePath, 'content');
+            const storedFile = new File(inputFilePath, new Readable());
             const expectedFile = storedFile;
             when(
                 mockedFileService.retrieveFileAsync(inputDrive, inputFilePath)
@@ -52,7 +53,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
     describe('removeFile', () => {
         test('Should remove a file from the file system', async () => {
             const inputDrive = new Drive('drive');
-            const inputFile = new File('/file.txt', '');
+            const inputFile = new File('/file.txt', new Readable());
             const storedFile = inputFile;
             const expectedFile = storedFile;
             when(
@@ -71,7 +72,7 @@ describe('AWS File System Orchestration Service Test Suite', () => {
     describe('writeFile', () => {
         test('Should write a file to the file system', async () => {
             const inputDrive = new Drive('drive');
-            const inputFile = new File('/file.txt', 'content');
+            const inputFile = new File('/file.txt', new Readable());
             const storedFile = inputFile;
             const expectedFile = storedFile;
             when(
@@ -144,33 +145,6 @@ describe('AWS File System Orchestration Service Test Suite', () => {
                     expectedDirectory.path
                 )
             ).once();
-        });
-    });
-
-    describe('deleteDirectory', () => {
-        test('Should a directory', async () => {
-            const inputDrive = new Drive('drive');
-            const inputDirectory = new Directory('/directory');
-            const storedFile = new File('/directory', '');
-            const expectedDirectory = inputDirectory;
-            when(
-                mockedFileService.removeFileAsync(inputDrive, anyOfClass(File))
-            ).thenResolve(storedFile);
-
-            const actualDirectory = await service.removeDirectory(
-                inputDrive,
-                inputDirectory
-            );
-
-            expect(actualDirectory).toEqual(expectedDirectory);
-            verify(
-                mockedFileService.removeFileAsync(inputDrive, anyOfClass(File))
-            ).once();
-            const [expectedDrive, expectedRemovedFile] = capture(
-                mockedFileService.removeFileAsync
-            ).last();
-            expect(inputDrive).toEqual(expectedDrive);
-            expect(storedFile).toEqual(expectedRemovedFile);
         });
     });
 });

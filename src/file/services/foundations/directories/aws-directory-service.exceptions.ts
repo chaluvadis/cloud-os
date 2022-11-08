@@ -32,6 +32,13 @@ export class AWSDirectoryServiceExceptions {
     }
 
     makeDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
-        return tryCatchAsync(logic).execute();
+        return tryCatchAsync(logic)
+            .handle([S3ServiceException], (exception) => {
+                const failedException = new FailedAWSDirectoryApiException(
+                    exception
+                );
+                return new AWSDirectoryDependencyException(failedException);
+            })
+            .execute();
     }
 }

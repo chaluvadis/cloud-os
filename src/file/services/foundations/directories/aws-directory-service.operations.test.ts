@@ -51,4 +51,35 @@ describe('AWS Directory Service Validations Test Suite', () => {
             ).once();
         });
     });
+
+    describe('makeDirectory', () => {
+        test('Should throw a dependency exception when AWS throws a service exception', async () => {
+            const inputDrive = new Drive('drive');
+            const inputDirectoryPath = '/path';
+            const sdkException = new S3ServiceException({
+                $fault: 'client',
+                $metadata: {},
+                name: '',
+            });
+            const innerException = Exception.fromError(sdkException);
+            const failedException = new FailedAWSDirectoryApiException(
+                innerException
+            );
+            const expectedException = new AWSDirectoryDependencyException(
+                failedException
+            );
+            const expectedFilePath = inputDirectoryPath;
+            when(
+                mockedBroker.putDirectory(anyOfClass(Drive), expectedFilePath)
+            ).thenReject(sdkException);
+
+            const action = () =>
+                service.makeDirectory(inputDrive, inputDirectoryPath);
+            await expect(action).toThrowExceptionAsync(expectedException);
+
+            verify(
+                mockedBroker.putDirectory(anyOfClass(Drive), expectedFilePath)
+            ).once();
+        });
+    });
 });
