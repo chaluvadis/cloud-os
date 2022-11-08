@@ -2,11 +2,11 @@ import { BundleOperations } from '../../../../core/bundlers/bundle-operations';
 import { Action } from '../../../../core/types/action';
 import { createAsyncRuntime } from '../../../../libraries/service-runtime';
 import { Directory } from '../../../models/directory/directory';
-import { AWSDirectoryServiceExceptions } from './aws-directory-service.exceptions';
+import { AWSDirectoryServiceExceptionHandlers } from './aws-directory-service.exceptions';
 import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
 
 export class AWSDirectoryServiceOperations extends BundleOperations(
-    AWSDirectoryServiceExceptions,
+    AWSDirectoryServiceExceptionHandlers,
     AWSDirectoryServiceValidations
 ) {
     createRetrieveDirectoryAsyncRuntime(

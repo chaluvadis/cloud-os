@@ -10,7 +10,7 @@ import { AWSDirectoryDependencyException } from './exceptions/aws-directory-dire
 import { AWSDirectoryValidationException } from './exceptions/aws-directory-validation-exception';
 import { FailedAWSDirectoryApiException } from './exceptions/failed-aws-directory-api-exception';
 
-export class AWSDirectoryServiceExceptions {
+export class AWSDirectoryServiceExceptionHandlers {
     retrieveDirectoryExceptionHandlerAsync(
         logic: Action<Promise<Directory>>
     ): Promise<Directory> {
