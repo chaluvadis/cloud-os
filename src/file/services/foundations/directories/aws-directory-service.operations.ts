@@ -1,24 +1,26 @@
+import { BundleOperations } from '../../../../core/bundlers/bundle-operations';
 import { Action } from '../../../../core/types/action';
 import { createAsyncRuntime } from '../../../../libraries/service-runtime';
 import { Directory } from '../../../models/directory/directory';
 import { AWSDirectoryServiceExceptions } from './aws-directory-service.exceptions';
+import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
 
-export class AWSDirectoryServiceOperations {
-    private readonly exceptions: AWSDirectoryServiceExceptions;
+const AWSDirectoryServiceBundledOperations = BundleOperations<
+    [AWSDirectoryServiceExceptions, AWSDirectoryServiceValidations]
+>(AWSDirectoryServiceExceptions, AWSDirectoryServiceValidations);
 
-    constructor() {
-        this.exceptions = new AWSDirectoryServiceExceptions();
-    }
-
-    retrieveDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
+export class AWSDirectoryServiceOperations extends AWSDirectoryServiceBundledOperations {
+    createRetrieveDirectoryAsyncRuntime(
+        logic: Action<Promise<Directory>>
+    ): Promise<Directory> {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.retrieveDirectory)
+            .exceptionHandler(this.retrieveDirectoryExceptionHandlerAsync)
             .run();
     }
 
-    makeDirectory(logic: Action<Promise<Directory>>) {
+    createMakeDirectoryAsyncRuntime(logic: Action<Promise<Directory>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.exceptions.makeDirectory)
+            .exceptionHandler(this.makeDirectoryExceptionHandlerAsync)
             .run();
     }
 }

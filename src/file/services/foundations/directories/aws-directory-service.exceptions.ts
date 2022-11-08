@@ -11,7 +11,9 @@ import { AWSDirectoryValidationException } from './exceptions/aws-directory-vali
 import { FailedAWSDirectoryApiException } from './exceptions/failed-aws-directory-api-exception';
 
 export class AWSDirectoryServiceExceptions {
-    retrieveDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
+    retrieveDirectoryExceptionHandlerAsync(
+        logic: Action<Promise<Directory>>
+    ): Promise<Directory> {
         return tryCatchAsync(logic)
             .handle(
                 [
@@ -31,7 +33,9 @@ export class AWSDirectoryServiceExceptions {
             .execute();
     }
 
-    makeDirectory(logic: Action<Promise<Directory>>): Promise<Directory> {
+    makeDirectoryExceptionHandlerAsync(
+        logic: Action<Promise<Directory>>
+    ): Promise<Directory> {
         return tryCatchAsync(logic)
             .handle(
                 [

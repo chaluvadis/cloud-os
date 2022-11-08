@@ -3,26 +3,21 @@ import { Drive } from '../../../../drive/models/drive';
 import { IAWSDirectoryBroker } from '../../../brokers/directories/aws-directory-broker.interface';
 import { Directory } from '../../../models/directory/directory';
 import { AWSDirectoryServiceOperations } from './aws-directory-service.operations';
-import { AWSDirectoryServiceValidations } from './aws-directory-service.validations';
 
-export class AWSDirectoryService {
-    private readonly validations: AWSDirectoryServiceValidations;
-    private readonly operations: AWSDirectoryServiceOperations;
-
+export class AWSDirectoryService extends AWSDirectoryServiceOperations {
     constructor(private readonly directoryBroker: IAWSDirectoryBroker) {
-        this.validations = new AWSDirectoryServiceValidations();
-        this.operations = new AWSDirectoryServiceOperations();
+        super();
     }
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
-        return this.operations.retrieveDirectory(async () => {
-            this.validations.validateDrive(drive);
-            this.validations.validateFilePath(directoryPath);
+        return this.createRetrieveDirectoryAsyncRuntime(async () => {
+            this.validateDrive(drive);
+            this.validateFilePath(directoryPath);
             const response = await this.directoryBroker.listObjectsInDirectory(
                 drive,
                 directoryPath
             );
-            this.validations.validateAWSListObjectsResponse(response);
+            this.validateAWSListObjectsResponse(response);
             return this.mapAWSObjectsToDirectory(
                 directoryPath,
                 response.Contents as AWSObject[]
@@ -36,7 +31,7 @@ export class AWSDirectoryService {
     ): Directory {
         const expandedRootPath = rootPath.split('/');
         const expandedFileKeys = awsFileList.map((awsObject) => {
-            this.validations.validateAWSObject(awsObject);
+            this.validateAWSObject(awsObject);
             return awsObject.Key!.split('/');
         });
         return new Directory(
@@ -107,9 +102,9 @@ export class AWSDirectoryService {
     }
 
     makeDirectory(drive: Drive, directoryPath: string): Promise<Directory> {
-        return this.operations.makeDirectory(async () => {
-            this.validations.validateDrive(drive);
-            this.validations.validateFilePath(directoryPath);
+        return this.createMakeDirectoryAsyncRuntime(async () => {
+            this.validateDrive(drive);
+            this.validateFilePath(directoryPath);
             await this.directoryBroker.putDirectory(drive, directoryPath);
             return new Directory(directoryPath);
         });
