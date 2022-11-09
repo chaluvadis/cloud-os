@@ -1,19 +1,26 @@
 import { BundledConstructor } from '../types/bundled-constructor';
 import { Constructor } from '../types/constructor';
 
-export function combinePartials<T extends any[]>(constructors: Constructor[]) {
-    class Dummy {}
-
-    constructors.forEach((baseCtor) => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-            Object.defineProperty(
-                Dummy.prototype,
-                name,
-                Object.getOwnPropertyDescriptor(baseCtor.prototype, name) ||
-                    Object.create(null)
+export function combinePartials<T extends any[]>(
+    derivedConstructor: Constructor,
+    constructors: Constructor[]
+) {
+    constructors.forEach((classRef) => {
+        Object.getOwnPropertyNames(classRef.prototype).forEach((name) => {
+            // you can get rid of type casting in this way
+            const descriptor = Object.getOwnPropertyDescriptor(
+                classRef.prototype,
+                name
             );
+            if (name !== 'constructor' && descriptor) {
+                Object.defineProperty(
+                    derivedConstructor.prototype,
+                    name,
+                    descriptor
+                );
+            }
         });
     });
 
-    return Dummy as BundledConstructor<T>;
+    return derivedConstructor as BundledConstructor<T>;
 }

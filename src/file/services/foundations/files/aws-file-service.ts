@@ -9,8 +9,8 @@ export class AWSFileService
     extends AWSFileServiceOperations
     implements IAWSFileService
 {
-    constructor(private readonly fileBroker: IAWSFileBroker) {
-        super();
+    constructor(fileBroker: IAWSFileBroker) {
+        super(fileBroker);
     }
 
     retrieveFileAsync(drive: Drive, filePath: string): Promise<File> {

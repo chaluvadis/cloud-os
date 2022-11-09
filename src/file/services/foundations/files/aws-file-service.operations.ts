@@ -4,26 +4,37 @@ import { Action } from '../../../../core/types/action';
 import { AWSFileServiceExceptionHandlers } from './aws-file-service.exceptions';
 import { AWSFileServiceValidations } from './aws-file-service.validations';
 import { BundleOperations } from '../../../../core/bundlers/bundle-operations';
+import { IAWSFileBroker } from '../../../brokers/files/aws-file-broker.interface';
 
 export class AWSFileServiceOperations extends BundleOperations(
     AWSFileServiceExceptionHandlers,
     AWSFileServiceValidations
 ) {
+    constructor(protected readonly fileBroker: IAWSFileBroker) {
+        super();
+    }
+
     createRetrieveFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.retrieveFileExceptionHandlerAsync)
+            .exceptionHandler((logic) =>
+                this.retrieveFileExceptionHandlerAsync(logic)
+            )
             .run();
     }
 
     createWriteFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.writeFileExceptionHandlerAsync)
+            .exceptionHandler((logic) =>
+                this.writeFileExceptionHandlerAsync(logic)
+            )
             .run();
     }
 
     createRemoveFileAsyncRuntime(logic: Action<Promise<File>>) {
         return createAsyncRuntime(logic)
-            .exceptionHandler(this.removeFileExceptionHandlerAsync)
+            .exceptionHandler((logic) =>
+                this.removeFileExceptionHandlerAsync(logic)
+            )
             .run();
     }
 }

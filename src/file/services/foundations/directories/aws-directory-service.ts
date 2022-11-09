@@ -5,8 +5,8 @@ import { Directory } from '../../../models/directory/directory';
 import { AWSDirectoryServiceOperations } from './aws-directory-service.operations';
 
 export class AWSDirectoryService extends AWSDirectoryServiceOperations {
-    constructor(private readonly directoryBroker: IAWSDirectoryBroker) {
-        super();
+    constructor(directoryBroker: IAWSDirectoryBroker) {
+        super(directoryBroker);
     }
 
     retrieveDirectory(drive: Drive, directoryPath: string): Promise<Directory> {

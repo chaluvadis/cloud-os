@@ -12,9 +12,8 @@ import { NullFileException } from '../../../models/file/exceptions/null-file-exc
 import { IllegalFileException } from '../../../models/file/exceptions/illegal-file-exception';
 import { IllegalFilePathException } from '../../../models/file/exceptions/illegal-file-path-exception';
 import { FailedAWSFileApiException } from './exceptions/failed-aws-file-api-exception';
-import { AWSFileServiceValidations } from './aws-file-service.validations';
 
-export class AWSFileServiceExceptionHandlers extends AWSFileServiceValidations {
+export class AWSFileServiceExceptionHandlers {
     retrieveFileExceptionHandlerAsync(logic: Action<Promise<File>>) {
         return tryCatchAsync(logic)
             .handle(
