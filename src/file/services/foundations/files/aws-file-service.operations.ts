@@ -11,7 +11,7 @@ export class AWSFileServiceOperations extends BundleOperations(
     AWSFileServiceValidations
 ) {
     constructor(protected readonly fileBroker: IAWSFileBroker) {
-        super();
+        super(arguments);
     }
 
     createRetrieveFileAsyncRuntime(logic: Action<Promise<File>>) {

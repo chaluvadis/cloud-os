@@ -11,7 +11,7 @@ export class AWSDirectoryServiceOperations extends BundleOperations(
     AWSDirectoryServiceValidations
 ) {
     constructor(protected readonly directoryBroker: IAWSDirectoryBroker) {
-        super(directoryBroker);
+        super(arguments);
     }
 
     createRetrieveDirectoryAsyncRuntime(
